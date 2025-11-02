@@ -34,15 +34,21 @@ export default function Home() {
   const [readwiseQuoteSearch, setReadwiseQuoteSearch] = useState("");
   const [readwiseFilterAuthors, setReadwiseFilterAuthors] = useState<string[]>([]);
   const [readwiseFilterCategories, setReadwiseFilterCategories] = useState<string[]>([]);
+  const [readwiseFilterTitles, setReadwiseFilterTitles] = useState<string[]>([]);
   const [readwiseAuthorSearch, setReadwiseAuthorSearch] = useState("");
   const [readwiseCategorySearch, setReadwiseCategorySearch] = useState("");
+  const [readwiseTitleSearch, setReadwiseTitleSearch] = useState("");
   const [showReadwiseAuthors, setShowReadwiseAuthors] = useState(false);
   const [showReadwiseCategories, setShowReadwiseCategories] = useState(false);
+  const [showReadwiseTitles, setShowReadwiseTitles] = useState(false);
+  const [readwiseDateStart, setReadwiseDateStart] = useState("");
+  const [readwiseDateEnd, setReadwiseDateEnd] = useState("");
   
   const authorDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
   const readwiseAuthorDropdownRef = useRef<HTMLDivElement>(null);
   const readwiseCategoryDropdownRef = useRef<HTMLDivElement>(null);
+  const readwiseTitleDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -58,6 +64,9 @@ export default function Home() {
       }
       if (readwiseCategoryDropdownRef.current && !readwiseCategoryDropdownRef.current.contains(event.target as Node)) {
         setShowReadwiseCategories(false);
+      }
+      if (readwiseTitleDropdownRef.current && !readwiseTitleDropdownRef.current.contains(event.target as Node)) {
+        setShowReadwiseTitles(false);
       }
     };
 
@@ -131,7 +140,17 @@ export default function Home() {
     return Array.from(categories).sort();
   }, [readwiseHighlights]);
 
-  // Filter Readwise authors and categories based on search
+  const readwiseTitles = useMemo(() => {
+    const titles = new Set<string>();
+    readwiseHighlights.forEach(highlight => {
+      if (highlight.book?.title) {
+        titles.add(highlight.book.title);
+      }
+    });
+    return Array.from(titles).sort();
+  }, [readwiseHighlights]);
+
+  // Filter Readwise authors, categories, and titles based on search
   const filteredReadwiseAuthors = useMemo(() => {
     return readwiseAuthors.filter(author => 
       author.toLowerCase().includes(readwiseAuthorSearch.toLowerCase())
@@ -143,6 +162,12 @@ export default function Home() {
       category.toLowerCase().includes(readwiseCategorySearch.toLowerCase())
     );
   }, [readwiseCategories, readwiseCategorySearch]);
+
+  const filteredReadwiseTitles = useMemo(() => {
+    return readwiseTitles.filter(title => 
+      title.toLowerCase().includes(readwiseTitleSearch.toLowerCase())
+    );
+  }, [readwiseTitles, readwiseTitleSearch]);
 
   // Filter Readwise highlights based on selected filters
   const filteredReadwiseHighlights = useMemo(() => {
@@ -159,6 +184,26 @@ export default function Home() {
         readwiseFilterCategories.includes(h.book?.category || "")
       );
     }
+
+    if (readwiseFilterTitles.length > 0) {
+      filtered = filtered.filter(h => 
+        readwiseFilterTitles.includes(h.book?.title || "")
+      );
+    }
+
+    if (readwiseDateStart) {
+      filtered = filtered.filter(h => {
+        if (!h.highlighted_at) return false;
+        return new Date(h.highlighted_at) >= new Date(readwiseDateStart);
+      });
+    }
+
+    if (readwiseDateEnd) {
+      filtered = filtered.filter(h => {
+        if (!h.highlighted_at) return false;
+        return new Date(h.highlighted_at) <= new Date(readwiseDateEnd);
+      });
+    }
     
     if (readwiseQuoteSearch.trim()) {
       filtered = filtered.filter(h => 
@@ -169,7 +214,7 @@ export default function Home() {
     }
     
     return filtered;
-  }, [readwiseHighlights, readwiseFilterAuthors, readwiseFilterCategories, readwiseQuoteSearch]);
+  }, [readwiseHighlights, readwiseFilterAuthors, readwiseFilterCategories, readwiseFilterTitles, readwiseQuoteSearch, readwiseDateStart, readwiseDateEnd]);
 
   // Highlight search terms in text
   const highlightText = (text: string, searchTerm: string) => {
@@ -623,14 +668,19 @@ export default function Home() {
                       <>
                         {/* Readwise Filters */}
                         <div className="mb-4 space-y-3">
-                          <button
-                            onClick={() => setReadwiseFiltersCollapsed(!readwiseFiltersCollapsed)}
-                            className="w-full flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                          >
-                            <Filter className="w-4 h-4" />
-                            <span>Filters</span>
-                            {readwiseFiltersCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setReadwiseFiltersCollapsed(!readwiseFiltersCollapsed)}
+                              className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                            >
+                              <Filter className="w-4 h-4" />
+                              <span>Filters</span>
+                              {readwiseFiltersCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                            </button>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {filteredReadwiseHighlights.length} highlight{filteredReadwiseHighlights.length !== 1 ? 's' : ''} found
+                            </span>
+                          </div>
 
                           {!readwiseFiltersCollapsed && (
                             <>
@@ -721,6 +771,81 @@ export default function Home() {
                                   </div>
                                 )}
 
+                                {/* Title Filter */}
+                                {readwiseTitles.length > 0 && (
+                                  <div className="relative" ref={readwiseTitleDropdownRef}>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setShowReadwiseTitles(!showReadwiseTitles);
+                                        setShowReadwiseAuthors(false);
+                                        setShowReadwiseCategories(false);
+                                      }}
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors text-left"
+                                    >
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        {readwiseFilterTitles.length === 0 ? (
+                                          <span className="text-gray-500 dark:text-gray-400">Select titles...</span>
+                                        ) : (
+                                          readwiseFilterTitles.map(title => (
+                                            <span key={title} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                                              {title}
+                                              <span
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setReadwiseFilterTitles(readwiseFilterTitles.filter(t => t !== title));
+                                                }}
+                                                className="hover:text-purple-600 dark:hover:text-purple-300 cursor-pointer"
+                                              >
+                                                ×
+                                              </span>
+                                            </span>
+                                          ))
+                                        )}
+                                      </div>
+                                      <ChevronDown className={cn("w-4 h-4 transition-transform", showReadwiseTitles && "rotate-180")} />
+                                    </button>
+                                    {showReadwiseTitles && (
+                                      <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                        <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                                          <input
+                                            type="text"
+                                            value={readwiseTitleSearch}
+                                            onChange={(e) => setReadwiseTitleSearch(e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            placeholder="Search..."
+                                            className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900"
+                                          />
+                                        </div>
+                                        <div className="max-h-48 overflow-y-auto">
+                                          {(readwiseTitleSearch ? filteredReadwiseTitles : readwiseTitles).map(title => (
+                                            <button
+                                              key={title}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (readwiseFilterTitles.includes(title)) {
+                                                  setReadwiseFilterTitles(readwiseFilterTitles.filter(t => t !== title));
+                                                } else {
+                                                  setReadwiseFilterTitles([...readwiseFilterTitles, title]);
+                                                }
+                                              }}
+                                              className={cn(
+                                                "w-full text-left px-3 py-2 text-sm hover:bg-purple-50 dark:hover:bg-gray-700 flex items-center gap-2",
+                                                readwiseFilterTitles.includes(title) && "bg-purple-50 dark:bg-gray-700"
+                                              )}
+                                            >
+                                              <span className={cn("w-3 h-3 border rounded flex items-center justify-center", readwiseFilterTitles.includes(title) ? "bg-purple-500 border-purple-500" : "border-gray-300")}>
+                                                {readwiseFilterTitles.includes(title) && <span className="text-white text-xs">✓</span>}
+                                              </span>
+                                              {title}
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+
                                 {/* Category Filter */}
                                 {readwiseCategories.length > 0 && (
                                   <div className="relative" ref={readwiseCategoryDropdownRef}>
@@ -729,6 +854,7 @@ export default function Home() {
                                       onClick={() => {
                                         setShowReadwiseCategories(!showReadwiseCategories);
                                         setShowReadwiseAuthors(false);
+                                        setShowReadwiseTitles(false);
                                       }}
                                       className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors text-left"
                                     >
@@ -796,10 +922,44 @@ export default function Home() {
                                 )}
                               </div>
 
-                              {/* Results count */}
-                              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                                {filteredReadwiseHighlights.length} highlight{filteredReadwiseHighlights.length !== 1 ? 's' : ''} found
-                              </p>
+                              {/* Date Range Filter */}
+                              <div className="space-y-2">
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                      From date
+                                    </label>
+                                    <input
+                                      type="date"
+                                      value={readwiseDateStart}
+                                      onChange={(e) => setReadwiseDateStart(e.target.value)}
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                      To date
+                                    </label>
+                                    <input
+                                      type="date"
+                                      value={readwiseDateEnd}
+                                      onChange={(e) => setReadwiseDateEnd(e.target.value)}
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                                    />
+                                  </div>
+                                </div>
+                                {(readwiseDateStart || readwiseDateEnd) && (
+                                  <button
+                                    onClick={() => {
+                                      setReadwiseDateStart("");
+                                      setReadwiseDateEnd("");
+                                    }}
+                                    className="w-full text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 underline"
+                                  >
+                                    Clear dates
+                                  </button>
+                                )}
+                              </div>
                             </>
                           )}
                         </div>
