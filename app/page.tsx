@@ -677,9 +677,12 @@ export default function Home() {
                               <span>Filters</span>
                               {readwiseFiltersCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
                             </button>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <button
+                              onClick={() => setReadwiseFiltersCollapsed(!readwiseFiltersCollapsed)}
+                              className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                            >
                               {filteredReadwiseHighlights.length} highlight{filteredReadwiseHighlights.length !== 1 ? 's' : ''} found
-                            </span>
+                            </button>
                           </div>
 
                           {!readwiseFiltersCollapsed && (
