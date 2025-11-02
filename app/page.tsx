@@ -114,8 +114,8 @@ export default function Home() {
   const readwiseAuthors = useMemo(() => {
     const authors = new Set<string>();
     readwiseHighlights.forEach(highlight => {
-      if (highlight.document?.author) {
-        authors.add(highlight.document.author);
+      if (highlight.book?.author) {
+        authors.add(highlight.book.author);
       }
     });
     return Array.from(authors).sort();
@@ -124,8 +124,8 @@ export default function Home() {
   const readwiseCategories = useMemo(() => {
     const categories = new Set<string>();
     readwiseHighlights.forEach(highlight => {
-      if (highlight.document?.category) {
-        categories.add(highlight.document.category);
+      if (highlight.book?.category) {
+        categories.add(highlight.book.category);
       }
     });
     return Array.from(categories).sort();
@@ -150,21 +150,21 @@ export default function Home() {
     
     if (readwiseFilterAuthors.length > 0) {
       filtered = filtered.filter(h => 
-        readwiseFilterAuthors.includes(h.document?.author || "")
+        readwiseFilterAuthors.includes(h.book?.author || "")
       );
     }
     
     if (readwiseFilterCategories.length > 0) {
       filtered = filtered.filter(h => 
-        readwiseFilterCategories.includes(h.document?.category || "")
+        readwiseFilterCategories.includes(h.book?.category || "")
       );
     }
     
     if (readwiseQuoteSearch.trim()) {
       filtered = filtered.filter(h => 
         h.text.toLowerCase().includes(readwiseQuoteSearch.toLowerCase()) ||
-        (h.document?.author || "").toLowerCase().includes(readwiseQuoteSearch.toLowerCase()) ||
-        (h.document?.title || "").toLowerCase().includes(readwiseQuoteSearch.toLowerCase())
+        (h.book?.author || "").toLowerCase().includes(readwiseQuoteSearch.toLowerCase()) ||
+        (h.book?.title || "").toLowerCase().includes(readwiseQuoteSearch.toLowerCase())
       );
     }
     
@@ -282,7 +282,7 @@ export default function Home() {
             <Heart className="w-10 h-10 text-rose-500 fill-current" />
             <h1 className="text-5xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
               Vows
-            </h1>
+          </h1>
           </div>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Create heartfelt vows inspired by the wisdom of philosophers and thinkers throughout history
@@ -445,7 +445,7 @@ export default function Home() {
                               </div>
                             </div>
                           )}
-                        </div>
+        </div>
 
                         {/* Theme Filter */}
                         <div className="relative" ref={categoryDropdownRef}>
@@ -571,8 +571,8 @@ export default function Home() {
                           </p>
                           <a
                             href="https://readwise.io/access_token"
-                            target="_blank"
-                            rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
                             className="inline-block px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-medium hover:from-rose-600 hover:to-pink-600 transition-all"
                           >
                             Get Readwise Access Token
@@ -809,15 +809,15 @@ export default function Home() {
                           {filteredReadwiseHighlights.map((highlight) => (
                             <button
                               key={highlight.id}
-                              onClick={() => {
-                                setSelectedQuote({
-                                  id: `readwise-${highlight.id}`,
-                                  text: highlight.text,
-                                  author: highlight.document?.author || highlight.document?.title || "Unknown",
-                                  period: highlight.document?.category || "Readwise",
-                                  category: undefined,
-                                });
-                              }}
+                            onClick={() => {
+                              setSelectedQuote({
+                                id: `readwise-${highlight.id}`,
+                                text: highlight.text,
+                                author: highlight.book?.author || highlight.book?.title || "Unknown",
+                                period: highlight.book?.category || "Readwise",
+                                category: undefined,
+                              });
+                            }}
                               className={cn(
                                 "w-full text-left p-4 rounded-lg border-2 transition-all",
                                 selectedQuote?.id === `readwise-${highlight.id}`
@@ -825,24 +825,64 @@ export default function Home() {
                                   : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
                               )}
                             >
-                              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                {highlightText(highlight.document?.author || "Unknown", readwiseQuoteSearch)}
-                              </p>
-                              <p className="text-gray-600 dark:text-gray-400 text-sm italic">
-                                &ldquo;{highlightText(highlight.text, readwiseQuoteSearch)}&rdquo;
-                              </p>
-                              <div className="flex items-center gap-2 mt-2 flex-wrap">
-                                {highlight.document?.title && (
-                                  <p className="text-xs text-gray-500 dark:text-gray-500">
-                                    {highlightText(highlight.document.title, readwiseQuoteSearch)}
-                                  </p>
-                                )}
-                                {highlight.document?.category && (
-                                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-                                    {highlight.document.category.charAt(0).toUpperCase() + highlight.document.category.slice(1)}
-                                  </span>
-                                )}
+                            {/* Book Image */}
+                            {highlight.book?.cover_image_url && (
+                              <div className="mb-2">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={highlight.book.cover_image_url}
+                                  alt={highlight.book.title || "Book cover"}
+                                  className="h-16 w-auto rounded border border-gray-200 dark:border-gray-700"
+                                  onError={(e) => {
+                                    // Hide image if it fails to load
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                  }}
+                                />
                               </div>
+                            )}
+                            
+                            {/* Author and Title */}
+                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                              {highlight.book?.author ? highlightText(highlight.book.author, readwiseQuoteSearch) : 
+                               highlight.book?.title ? highlightText(highlight.book.title, readwiseQuoteSearch) : 
+                               "Unknown"}
+                            </p>
+                            
+                            {/* Quote Text */}
+                            <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-2">
+                              &ldquo;{highlightText(highlight.text, readwiseQuoteSearch)}&rdquo;
+                            </p>
+                            
+                            {/* Metadata Row */}
+                            <div className="flex items-center gap-2 flex-wrap text-xs text-gray-500 dark:text-gray-500">
+                              {highlight.book?.title && highlight.book?.author && (
+                                <span className="inline-flex items-center gap-1">
+                                  <BookOpen className="w-3 h-3" />
+                                  {highlightText(highlight.book.title, readwiseQuoteSearch)}
+                                </span>
+                              )}
+                              {highlight.book?.category && (
+                                <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                                  {highlight.book.category.charAt(0).toUpperCase() + highlight.book.category.slice(1)}
+                                </span>
+                              )}
+                              {highlight.highlighted_at && (
+                                <span className="inline-flex items-center gap-1">
+                                  📅 {new Date(highlight.highlighted_at).toLocaleDateString()}
+                                </span>
+                              )}
+                              {highlight.url && (
+                                <a
+                                  href={highlight.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 hover:underline"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  🔗 View highlight
+                                </a>
+                              )}
+                            </div>
                             </button>
                           ))}
                         </div>

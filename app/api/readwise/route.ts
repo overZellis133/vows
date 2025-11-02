@@ -15,6 +15,11 @@ export async function POST(request: NextRequest) {
 
     const highlights = await fetchReadwiseHighlightsPaginated(apiKey);
 
+    // Log first highlight structure to debug
+    if (highlights.length > 0) {
+      console.log("Sample highlight structure:", JSON.stringify(highlights[0], null, 2));
+    }
+
     return NextResponse.json({ highlights });
   } catch (error) {
     console.error("Error fetching Readwise highlights:", error);

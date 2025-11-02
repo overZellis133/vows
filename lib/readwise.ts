@@ -12,18 +12,26 @@ export interface ReadwiseHighlight {
   updated?: string;
   book_id?: number;
   tags?: ReadwiseTag[];
-  document?: ReadwiseDocument;
+  // Note: Readwise API doesn't include full book object in highlight responses
+  // We need to fetch it separately using book_id
+  book?: ReadwiseBook;
 }
 
-export interface ReadwiseDocument {
+export interface ReadwiseBook {
   id: number;
-  url?: string;
   title?: string;
   author?: string;
   category?: string;
   source?: string;
   num_highlights?: number;
   updated?: string;
+  cover_image_url?: string;
+  highlights_url?: string;
+  readwise_url?: string;
+  source_url?: string;
+  asin?: string;
+  tags?: ReadwiseTag[];
+  user_book_notes?: string;
 }
 
 export interface ReadwiseTag {
@@ -52,16 +60,15 @@ export async function fetchReadwiseHighlights(apiKey: string): Promise<ReadwiseH
 }
 
 export async function fetchReadwiseHighlightsPaginated(
-  apiKey: string,
-  pageSize: number = 1000
+  apiKey: string
 ): Promise<ReadwiseHighlight[]> {
-  let allHighlights: ReadwiseHighlight[] = [];
+  const allHighlights: ReadwiseHighlight[] = [];
   let nextCursor: string | null = null;
 
   do {
     const url: string = nextCursor
-      ? `https://readwise.io/api/v2/highlights/?page_size=${pageSize}&page_cursor=${nextCursor}`
-      : `https://readwise.io/api/v2/highlights/?page_size=${pageSize}`;
+      ? `https://readwise.io/api/v2/export/?pageCursor=${nextCursor}`
+      : `https://readwise.io/api/v2/export/`;
 
     try {
       const response = await fetch(url, {
@@ -75,19 +82,30 @@ export async function fetchReadwiseHighlightsPaginated(
       }
 
       const data = await response.json();
-      allHighlights = [...allHighlights, ...(data.results || [])];
       
-      // Extract cursor from next URL
-      if (data.next) {
-        try {
-          const nextUrl = new URL(data.next);
-          nextCursor = nextUrl.searchParams.get("page_cursor");
-        } catch {
-          nextCursor = null;
-        }
-      } else {
-        nextCursor = null;
+      // Process books and extract highlights with book metadata
+      if (data.results) {
+        data.results.forEach((book: ReadwiseBookExport) => {
+          if (book.highlights && book.highlights.length > 0) {
+            book.highlights.forEach((highlight: ReadwiseHighlightExport) => {
+              allHighlights.push({
+                ...highlight,
+                book: {
+                  id: book.user_book_id,
+                  title: book.title,
+                  author: book.author,
+                  category: book.category,
+                  cover_image_url: book.cover_image_url,
+                  source_url: book.source_url,
+                  readwise_url: book.readwise_url,
+                },
+              });
+            });
+          }
+        });
       }
+      
+      nextCursor = data.nextPageCursor || null;
     } catch (error) {
       console.error("Error fetching Readwise highlights:", error);
       throw error;
@@ -95,5 +113,30 @@ export async function fetchReadwiseHighlightsPaginated(
   } while (nextCursor);
 
   return allHighlights;
+}
+
+interface ReadwiseBookExport {
+  user_book_id: number;
+  title?: string;
+  author?: string;
+  category?: string;
+  cover_image_url?: string;
+  source_url?: string;
+  readwise_url?: string;
+  highlights?: ReadwiseHighlightExport[];
+}
+
+interface ReadwiseHighlightExport {
+  id: number;
+  text: string;
+  note?: string;
+  location?: number;
+  location_type?: string;
+  highlighted_at?: string;
+  url?: string;
+  color?: string;
+  updated?: string;
+  book_id?: number;
+  tags?: ReadwiseTag[];
 }
 
