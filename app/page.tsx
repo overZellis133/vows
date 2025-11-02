@@ -49,6 +49,11 @@ export default function Home() {
   const readwiseAuthorDropdownRef = useRef<HTMLDivElement>(null);
   const readwiseCategoryDropdownRef = useRef<HTMLDivElement>(null);
   const readwiseTitleDropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Search input refs for autofocus
+  const readwiseAuthorSearchRef = useRef<HTMLInputElement>(null);
+  const readwiseCategorySearchRef = useRef<HTMLInputElement>(null);
+  const readwiseTitleSearchRef = useRef<HTMLInputElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -83,6 +88,25 @@ export default function Home() {
       return () => clearTimeout(timer);
     }
   }, [copied]);
+
+  // Autofocus search inputs when dropdowns open
+  useEffect(() => {
+    if (showReadwiseAuthors && readwiseAuthorSearchRef.current) {
+      readwiseAuthorSearchRef.current.focus();
+    }
+  }, [showReadwiseAuthors]);
+
+  useEffect(() => {
+    if (showReadwiseCategories && readwiseCategorySearchRef.current) {
+      readwiseCategorySearchRef.current.focus();
+    }
+  }, [showReadwiseCategories]);
+
+  useEffect(() => {
+    if (showReadwiseTitles && readwiseTitleSearchRef.current) {
+      readwiseTitleSearchRef.current.focus();
+    }
+  }, [showReadwiseTitles]);
 
   // Filter authors and categories based on search
   const filteredAuthors = useMemo(() => {
@@ -737,6 +761,7 @@ export default function Home() {
                                       <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                         <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                                           <input
+                                            ref={readwiseAuthorSearchRef}
                                             type="text"
                                             value={readwiseAuthorSearch}
                                             onChange={(e) => setReadwiseAuthorSearch(e.target.value)}
@@ -812,6 +837,7 @@ export default function Home() {
                                       <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                         <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                                           <input
+                                            ref={readwiseTitleSearchRef}
                                             type="text"
                                             value={readwiseTitleSearch}
                                             onChange={(e) => setReadwiseTitleSearch(e.target.value)}
@@ -887,6 +913,7 @@ export default function Home() {
                                       <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                         <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                                           <input
+                                            ref={readwiseCategorySearchRef}
                                             type="text"
                                             value={readwiseCategorySearch}
                                             onChange={(e) => setReadwiseCategorySearch(e.target.value)}
