@@ -217,10 +217,10 @@ export default function Home() {
                     </button>
                   </div>
                   <p className="text-gray-700 dark:text-gray-300 text-sm italic mb-1">
-                    "{highlightText(selectedQuote.text, quoteSearch)}"
+                    &ldquo;{highlightText(selectedQuote.text, quoteSearch)}&rdquo;
                   </p>
                   <p className="text-xs text-rose-900 dark:text-rose-300">
-                    — {highlightText(selectedQuote.author, quoteSearch)}
+                    &mdash; {highlightText(selectedQuote.author, quoteSearch)}
                   </p>
                 </div>
               )}
@@ -422,7 +422,7 @@ export default function Home() {
                         {highlightText(quote.author, quoteSearch)}
                       </p>
                       <p className="text-gray-600 dark:text-gray-400 text-sm italic">
-                        "{highlightText(quote.text, quoteSearch)}"
+                        &ldquo;{highlightText(quote.text, quoteSearch)}&rdquo;
                       </p>
                       <div className="flex items-center gap-2 mt-2">
                         <p className="text-xs text-gray-500 dark:text-gray-500">
