@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { philosopherQuotes, type Quote, getAllAuthors, getAllCategories } from "@/lib/quotes";
 import { cn } from "@/lib/utils";
-import { Loader2, Heart, BookOpen, FileText, Filter } from "lucide-react";
+import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp } from "lucide-react";
 
 type QuoteSource = "philosophers" | "readwise";
 
@@ -20,6 +20,8 @@ export default function Home() {
   const [filterCategories, setFilterCategories] = useState<string[]>([]);
   const [authorSearch, setAuthorSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
+  const [showAllAuthors, setShowAllAuthors] = useState(false);
+  const [showAllCategories, setShowAllCategories] = useState(false);
 
   // Filter authors and categories based on search
   const filteredAuthors = useMemo(() => {
@@ -166,89 +168,145 @@ export default function Home() {
                   <div className="space-y-3">
                     {/* Philosopher Filter */}
                     <div className="relative">
-                      <input
-                        type="text"
-                        value={authorSearch}
-                        onChange={(e) => setAuthorSearch(e.target.value)}
-                        placeholder="Search philosophers..."
-                        className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                      />
-                      {authorSearch && filteredAuthors.length > 0 && (
-                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-40 overflow-y-auto">
-                          {filteredAuthors.map(author => (
-                            <button
-                              key={author}
-                              onClick={() => {
-                                if (!filterAuthors.includes(author)) {
-                                  setFilterAuthors([...filterAuthors, author]);
-                                }
-                                setAuthorSearch("");
-                              }}
-                              className="w-full text-left px-3 py-2 text-sm hover:bg-rose-50 dark:hover:bg-gray-700"
-                            >
-                              {author}
-                            </button>
-                          ))}
+                      <div
+                        onClick={() => {
+                          setShowAllAuthors(!showAllAuthors);
+                          setShowAllCategories(false);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
+                      >
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {filterAuthors.length === 0 ? (
+                            <span className="text-gray-500 dark:text-gray-400">Select philosophers...</span>
+                          ) : (
+                            filterAuthors.map(author => (
+                              <span key={author} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 rounded-full">
+                                {author}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilterAuthors(filterAuthors.filter(a => a !== author));
+                                  }}
+                                  className="hover:text-rose-600 dark:hover:text-rose-300"
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))
+                          )}
+                        </div>
+                        <ChevronDown className={cn("w-4 h-4 transition-transform", showAllAuthors && "rotate-180")} />
+                      </div>
+                      {showAllAuthors && (
+                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                          <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                            <input
+                              type="text"
+                              value={authorSearch}
+                              onChange={(e) => setAuthorSearch(e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
+                              placeholder="Search..."
+                              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900"
+                            />
+                          </div>
+                          <div className="max-h-48 overflow-y-auto">
+                            {(authorSearch ? filteredAuthors : getAllAuthors()).map(author => (
+                              <button
+                                key={author}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (filterAuthors.includes(author)) {
+                                    setFilterAuthors(filterAuthors.filter(a => a !== author));
+                                  } else {
+                                    setFilterAuthors([...filterAuthors, author]);
+                                  }
+                                }}
+                                className={cn(
+                                  "w-full text-left px-3 py-2 text-sm hover:bg-rose-50 dark:hover:bg-gray-700 flex items-center gap-2",
+                                  filterAuthors.includes(author) && "bg-rose-50 dark:bg-gray-700"
+                                )}
+                              >
+                                <span className={cn("w-3 h-3 border rounded flex items-center justify-center", filterAuthors.includes(author) ? "bg-rose-500 border-rose-500" : "border-gray-300")}>
+                                  {filterAuthors.includes(author) && <span className="text-white text-xs">✓</span>}
+                                </span>
+                                {author}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
 
                     {/* Theme Filter */}
                     <div className="relative">
-                      <input
-                        type="text"
-                        value={categorySearch}
-                        onChange={(e) => setCategorySearch(e.target.value)}
-                        placeholder="Search themes..."
-                        className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                      />
-                      {categorySearch && filteredCategories.length > 0 && (
-                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-40 overflow-y-auto">
-                          {filteredCategories.map(category => (
-                            <button
-                              key={category}
-                              onClick={() => {
-                                if (!filterCategories.includes(category)) {
-                                  setFilterCategories([...filterCategories, category]);
-                                }
-                                setCategorySearch("");
-                              }}
-                              className="w-full text-left px-3 py-2 text-sm hover:bg-rose-50 dark:hover:bg-gray-700"
-                            >
-                              {category.charAt(0).toUpperCase() + category.slice(1)}
-                            </button>
-                          ))}
+                      <div
+                        onClick={() => {
+                          setShowAllCategories(!showAllCategories);
+                          setShowAllAuthors(false);
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
+                      >
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {filterCategories.length === 0 ? (
+                            <span className="text-gray-500 dark:text-gray-400">Select themes...</span>
+                          ) : (
+                            filterCategories.map(category => (
+                              <span key={category} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+                                {category.charAt(0).toUpperCase() + category.slice(1)}
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilterCategories(filterCategories.filter(c => c !== category));
+                                  }}
+                                  className="hover:text-blue-600 dark:hover:text-blue-300"
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))
+                          )}
+                        </div>
+                        <ChevronDown className={cn("w-4 h-4 transition-transform", showAllCategories && "rotate-180")} />
+                      </div>
+                      {showAllCategories && (
+                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                          <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                            <input
+                              type="text"
+                              value={categorySearch}
+                              onChange={(e) => setCategorySearch(e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
+                              placeholder="Search..."
+                              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900"
+                            />
+                          </div>
+                          <div className="max-h-48 overflow-y-auto">
+                            {(categorySearch ? filteredCategories : getAllCategories()).map(category => (
+                              <button
+                                key={category}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (filterCategories.includes(category)) {
+                                    setFilterCategories(filterCategories.filter(c => c !== category));
+                                  } else {
+                                    setFilterCategories([...filterCategories, category]);
+                                  }
+                                }}
+                                className={cn(
+                                  "w-full text-left px-3 py-2 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center gap-2",
+                                  filterCategories.includes(category) && "bg-blue-50 dark:bg-gray-700"
+                                )}
+                              >
+                                <span className={cn("w-3 h-3 border rounded flex items-center justify-center", filterCategories.includes(category) ? "bg-blue-500 border-blue-500" : "border-gray-300")}>
+                                  {filterCategories.includes(category) && <span className="text-white text-xs">✓</span>}
+                                </span>
+                                {category.charAt(0).toUpperCase() + category.slice(1)}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
-
-                    {/* Selected Filters */}
-                    {(filterAuthors.length > 0 || filterCategories.length > 0) && (
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {filterAuthors.map(author => (
-                          <span key={author} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 rounded-full">
-                            {author}
-                            <button
-                              onClick={() => setFilterAuthors(filterAuthors.filter(a => a !== author))}
-                              className="hover:text-rose-600 dark:hover:text-rose-300"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
-                        {filterCategories.map(category => (
-                          <span key={category} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                            <button
-                              onClick={() => setFilterCategories(filterCategories.filter(c => c !== category))}
-                              className="hover:text-blue-600 dark:hover:text-blue-300"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    )}
                   </div>
 
                   {/* Results count */}
