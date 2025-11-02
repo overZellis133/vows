@@ -146,6 +146,447 @@ export const philosopherQuotes: Quote[] = [
     author: "Carl Jung",
     period: "Modern (1875-1961)",
     category: "relationships"
+  },
+  {
+    id: "21",
+    text: "Act only according to that maxim whereby you can at the same time will that it should become a universal law.",
+    author: "Immanuel Kant",
+    period: "Enlightenment Germany (1724-1804)",
+    category: "ethics"
+  },
+  {
+    id: "22",
+    text: "Two things fill the mind with ever-increasing wonder and awe, the more often and the more intensely the mind of thought is drawn to them: the starry heavens above me and the moral law within me.",
+    author: "Immanuel Kant",
+    period: "Enlightenment Germany (1724-1804)",
+    category: "ethics"
+  },
+  {
+    id: "23",
+    text: "Treat people as an end, and never as a means to an end.",
+    author: "Immanuel Kant",
+    period: "Enlightenment Germany (1724-1804)",
+    category: "ethics"
+  },
+  {
+    id: "24",
+    text: "Sapere aude! (Dare to know!) Have courage to make use of your own reason.",
+    author: "Immanuel Kant",
+    period: "Enlightenment Germany (1724-1804)",
+    category: "wisdom"
+  },
+  {
+    id: "25",
+    text: "Out of the crooked timber of humanity, no straight thing was ever made.",
+    author: "Immanuel Kant",
+    period: "Enlightenment Germany (1724-1804)",
+    category: "acceptance"
+  },
+  {
+    id: "26",
+    text: "I know that I know nothing.",
+    author: "Socrates",
+    period: "Ancient Greece (469-399 BCE)",
+    category: "wisdom"
+  },
+  {
+    id: "27",
+    text: "No one can harm the person who knows himself to be virtuous, for never yet was happiness overcome by unhappiness.",
+    author: "Socrates",
+    period: "Ancient Greece (469-399 BCE)",
+    category: "strength"
+  },
+  {
+    id: "28",
+    text: "The secret of happiness, you see, is not found in seeking more, but in developing the capacity to enjoy less.",
+    author: "Socrates",
+    period: "Ancient Greece (469-399 BCE)",
+    category: "happiness"
+  },
+  {
+    id: "29",
+    text: "Wise men speak because they have something to say; fools because they have to say something.",
+    author: "Plato",
+    period: "Ancient Greece (427-347 BCE)",
+    category: "wisdom"
+  },
+  {
+    id: "30",
+    text: "At the touch of love everyone becomes a poet.",
+    author: "Plato",
+    period: "Ancient Greece (427-347 BCE)",
+    category: "love"
+  },
+  {
+    id: "31",
+    text: "Love is a serious mental disease.",
+    author: "Plato",
+    period: "Ancient Greece (427-347 BCE)",
+    category: "love"
+  },
+  {
+    id: "32",
+    text: "Friendship is a single soul dwelling in two bodies.",
+    author: "Aristotle",
+    period: "Ancient Greece (384-322 BCE)",
+    category: "relationships"
+  },
+  {
+    id: "33",
+    text: "Happiness depends upon ourselves.",
+    author: "Aristotle",
+    period: "Ancient Greece (384-322 BCE)",
+    category: "happiness"
+  },
+  {
+    id: "34",
+    text: "Knowing yourself is the beginning of all wisdom.",
+    author: "Aristotle",
+    period: "Ancient Greece (384-322 BCE)",
+    category: "wisdom"
+  },
+  {
+    id: "35",
+    text: "The antidote for fifty enemies is one friend.",
+    author: "Aristotle",
+    period: "Ancient Greece (384-322 BCE)",
+    category: "friendship"
+  },
+  {
+    id: "36",
+    text: "What is hard won is dearly loved.",
+    author: "Aristotle",
+    period: "Ancient Greece (384-322 BCE)",
+    category: "commitment"
+  },
+  {
+    id: "37",
+    text: "The journey of a thousand miles begins with one step.",
+    author: "Lao Tzu",
+    period: "Ancient China (6th century BCE)",
+    category: "growth"
+  },
+  {
+    id: "38",
+    text: "When you are content to be simply yourself and don't compare or compete, everyone will respect you.",
+    author: "Lao Tzu",
+    period: "Ancient China (6th century BCE)",
+    category: "authenticity"
+  },
+  {
+    id: "39",
+    text: "Mastering others is strength. Mastering yourself is true power.",
+    author: "Lao Tzu",
+    period: "Ancient China (6th century BCE)",
+    category: "wisdom"
+  },
+  {
+    id: "40",
+    text: "Kindness in words creates confidence. Kindness in thinking creates profoundness. Kindness in giving creates love.",
+    author: "Lao Tzu",
+    period: "Ancient China (6th century BCE)",
+    category: "kindness"
+  },
+  {
+    id: "41",
+    text: "To think is easy. To act is difficult. But the most difficult thing in the world is to act in accordance with your thinking.",
+    author: "Johann Wolfgang von Goethe",
+    period: "Germany (1749-1832)",
+    category: "action"
+  },
+  {
+    id: "42",
+    text: "The way you see people is the way you treat them, and the way you treat them is what they become.",
+    author: "Johann Wolfgang von Goethe",
+    period: "Germany (1749-1832)",
+    category: "relationships"
+  },
+  {
+    id: "43",
+    text: "Let everyone sweep in front of his own door, and the whole world will be clean.",
+    author: "Johann Wolfgang von Goethe",
+    period: "Germany (1749-1832)",
+    category: "responsibility"
+  },
+  {
+    id: "44",
+    text: "If you treat an individual as he is, he will remain how he is. But if you treat him as if he were what he ought to be and could be, he will become what he ought to be and could be.",
+    author: "Johann Wolfgang von Goethe",
+    period: "Germany (1749-1832)",
+    category: "growth"
+  },
+  {
+    id: "45",
+    text: "To love another person is to see the face of God.",
+    author: "Victor Hugo",
+    period: "France (1802-1885)",
+    category: "love"
+  },
+  {
+    id: "46",
+    text: "The power of a glance has been so much abused in love stories, that it has come to be disbelieved in. Few people dare now to say that two beings have fallen in love because they have looked at each other.",
+    author: "Victor Hugo",
+    period: "France (1802-1885)",
+    category: "love"
+  },
+  {
+    id: "47",
+    text: "Even the darkest night will end and the sun will rise.",
+    author: "Victor Hugo",
+    period: "France (1802-1885)",
+    category: "hope"
+  },
+  {
+    id: "48",
+    text: "Logic will get you from A to B. Imagination will take you everywhere.",
+    author: "Albert Einstein",
+    period: "Modern (1879-1955)",
+    category: "imagination"
+  },
+  {
+    id: "49",
+    text: "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.",
+    author: "Albert Einstein",
+    period: "Modern (1879-1955)",
+    category: "wisdom"
+  },
+  {
+    id: "50",
+    text: "Gravitation is not responsible for people falling in love.",
+    author: "Albert Einstein",
+    period: "Modern (1879-1955)",
+    category: "love"
+  },
+  {
+    id: "51",
+    text: "Life is like riding a bicycle. To keep your balance, you must keep moving.",
+    author: "Albert Einstein",
+    period: "Modern (1879-1955)",
+    category: "life"
+  },
+  {
+    id: "52",
+    text: "Peace cannot be kept by force; it can only be achieved by understanding.",
+    author: "Albert Einstein",
+    period: "Modern (1879-1955)",
+    category: "peace"
+  },
+  {
+    id: "53",
+    text: "Only those who will risk going too far can possibly find out how far one can go.",
+    author: "T.S. Eliot",
+    period: "Modern (1888-1965)",
+    category: "courage"
+  },
+  {
+    id: "54",
+    text: "The beautiful is always mysterious.",
+    author: "Charles Baudelaire",
+    period: "France (1821-1867)",
+    category: "beauty"
+  },
+  {
+    id: "55",
+    text: "The most beautiful experience we can have is the mysterious.",
+    author: "Albert Einstein",
+    period: "Modern (1879-1955)",
+    category: "wonder"
+  },
+  {
+    id: "56",
+    text: "That which does not kill us makes us stronger.",
+    author: "Friedrich Nietzsche",
+    period: "Germany (1844-1900)",
+    category: "strength"
+  },
+  {
+    id: "57",
+    text: "Without music, life would be a mistake.",
+    author: "Friedrich Nietzsche",
+    period: "Germany (1844-1900)",
+    category: "life"
+  },
+  {
+    id: "58",
+    text: "It is not a lack of love, but a lack of friendship that makes unhappy marriages.",
+    author: "Friedrich Nietzsche",
+    period: "Germany (1844-1900)",
+    category: "relationships"
+  },
+  {
+    id: "59",
+    text: "He who has a why to live can bear almost any how.",
+    author: "Friedrich Nietzsche",
+    period: "Germany (1844-1900)",
+    category: "meaning"
+  },
+  {
+    id: "60",
+    text: "I disapprove of what you say, but I will defend to the death your right to say it.",
+    author: "Voltaire",
+    period: "France (1694-1778)",
+    category: "freedom"
+  },
+  {
+    id: "61",
+    text: "Judge a man by his questions rather than by his answers.",
+    author: "Voltaire",
+    period: "France (1694-1778)",
+    category: "wisdom"
+  },
+  {
+    id: "62",
+    text: "Doubt is an uncomfortable condition, but certainty is a ridiculous one.",
+    author: "Voltaire",
+    period: "France (1694-1778)",
+    category: "wisdom"
+  },
+  {
+    id: "63",
+    text: "The trade of governing has always been monopolized by the most ignorant and the most rascally individuals of mankind.",
+    author: "Thomas Paine",
+    period: "England/US (1737-1809)",
+    category: "wisdom"
+  },
+  {
+    id: "64",
+    text: "He who fears something gives it power over him.",
+    author: "Moorish Proverb",
+    period: "Ancient",
+    category: "courage"
+  },
+  {
+    id: "65",
+    text: "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",
+    author: "Rumi",
+    period: "Persia (1207-1273)",
+    category: "wisdom"
+  },
+  {
+    id: "66",
+    text: "Let yourself be silently drawn by the strange pull of what you really love. It will not lead you astray.",
+    author: "Rumi",
+    period: "Persia (1207-1273)",
+    category: "love"
+  },
+  {
+    id: "67",
+    text: "The wound is the place where the Light enters you.",
+    author: "Rumi",
+    period: "Persia (1207-1273)",
+    category: "growth"
+  },
+  {
+    id: "68",
+    text: "You have been sent a sacred invitation. The note is inside you.",
+    author: "Rumi",
+    period: "Persia (1207-1273)",
+    category: "self-knowledge"
+  },
+  {
+    id: "69",
+    text: "The best revenge is to be unlike him who performed the injury.",
+    author: "Marcus Aurelius",
+    period: "Ancient Rome (121-180)",
+    category: "wisdom"
+  },
+  {
+    id: "70",
+    text: "The impediment to action advances action. What stands in the way becomes the way.",
+    author: "Marcus Aurelius",
+    period: "Ancient Rome (121-180)",
+    category: "courage"
+  },
+  {
+    id: "71",
+    text: "How much trouble he avoids who does not look to see what his neighbor says or does.",
+    author: "Marcus Aurelius",
+    period: "Ancient Rome (121-180)",
+    category: "authenticity"
+  },
+  {
+    id: "72",
+    text: "You have power over your mind—not outside events. Realize this, and you will find strength.",
+    author: "Marcus Aurelius",
+    period: "Ancient Rome (121-180)",
+    category: "strength"
+  },
+  {
+    id: "73",
+    text: "The happiness of your life depends upon the quality of your thoughts.",
+    author: "Marcus Aurelius",
+    period: "Ancient Rome (121-180)",
+    category: "happiness"
+  },
+  {
+    id: "74",
+    text: "Do not go where the path may lead, go instead where there is no path and leave a trail.",
+    author: "Ralph Waldo Emerson",
+    period: "Modern (1803-1882)",
+    category: "courage"
+  },
+  {
+    id: "75",
+    text: "The only way to have a friend is to be one.",
+    author: "Ralph Waldo Emerson",
+    period: "Modern (1803-1882)",
+    category: "friendship"
+  },
+  {
+    id: "76",
+    text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+    author: "Ralph Waldo Emerson",
+    period: "Modern (1803-1882)",
+    category: "strength"
+  },
+  {
+    id: "77",
+    text: "For every minute you are angry you lose sixty seconds of happiness.",
+    author: "Ralph Waldo Emerson",
+    period: "Modern (1803-1882)",
+    category: "happiness"
+  },
+  {
+    id: "78",
+    text: "What is most sacred, profound, and serious is also most playful.",
+    author: "Paul Goodman",
+    period: "Modern (1911-1972)",
+    category: "wisdom"
+  },
+  {
+    id: "79",
+    text: "Love is not a state of being that you are in; love is a state of being that you become.",
+    author: "Bell Hooks",
+    period: "Modern (1952-2021)",
+    category: "love"
+  },
+  {
+    id: "80",
+    text: "All the world's a stage, and all the men and women merely players.",
+    author: "William Shakespeare",
+    period: "England (1564-1616)",
+    category: "wisdom"
+  },
+  {
+    id: "81",
+    text: "Doubt thou the stars are fire, doubt that the sun doth move, doubt truth to be a liar, but never doubt I love.",
+    author: "William Shakespeare",
+    period: "England (1564-1616)",
+    category: "love"
+  },
+  {
+    id: "82",
+    text: "We are what we pretend to be, so we must be careful about what we pretend to be.",
+    author: "Kurt Vonnegut",
+    period: "Modern (1922-2007)",
+    category: "authenticity"
+  },
+  {
+    id: "83",
+    text: "The opposite of love is not hate, it's indifference.",
+    author: "Elie Wiesel",
+    period: "Modern (1928-2016)",
+    category: "love"
   }
 ];
 
