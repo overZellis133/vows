@@ -204,14 +204,14 @@ export default function Home() {
 
               {/* Selected Quote Display */}
               {selectedQuote && (
-                <div className="mb-4 bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 rounded-2xl shadow-lg p-4 border border-rose-200 dark:border-rose-900">
+                <div className="mb-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-2xl shadow-lg p-4 border border-blue-200 dark:border-blue-900">
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">
+                    <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">
                       Your Seed Quote
                     </h3>
                     <button
                       onClick={() => setSelectedQuote(null)}
-                      className="text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-200 text-sm"
+                      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm"
                     >
                       ✕
                     </button>
@@ -219,7 +219,7 @@ export default function Home() {
                   <p className="text-gray-700 dark:text-gray-300 text-sm italic mb-1">
                     &ldquo;{highlightText(selectedQuote.text, quoteSearch)}&rdquo;
                   </p>
-                  <p className="text-xs text-rose-900 dark:text-rose-300">
+                  <p className="text-xs text-blue-900 dark:text-blue-300">
                     &mdash; {highlightText(selectedQuote.author, quoteSearch)}
                   </p>
                 </div>
@@ -416,7 +416,7 @@ export default function Home() {
                       className={cn(
                         "w-full text-left p-4 rounded-lg border-2 transition-all",
                         selectedQuote?.id === quote.id
-                          ? "border-rose-500 bg-rose-50 dark:bg-rose-950/20 shadow-md"
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
                           : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
                       )}
                     >
