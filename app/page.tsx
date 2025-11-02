@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { philosopherQuotes, type Quote, getAllAuthors, getAllCategories } from "@/lib/quotes";
 import { cn } from "@/lib/utils";
-import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp, Search } from "lucide-react";
 
 type QuoteSource = "philosophers" | "readwise";
 
@@ -20,6 +20,7 @@ export default function Home() {
   const [filterCategories, setFilterCategories] = useState<string[]>([]);
   const [authorSearch, setAuthorSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
+  const [quoteSearch, setQuoteSearch] = useState("");
   const [showAllAuthors, setShowAllAuthors] = useState(false);
   const [showAllCategories, setShowAllCategories] = useState(false);
   
@@ -68,8 +69,15 @@ export default function Home() {
       filtered = filtered.filter(q => filterCategories.includes(q.category || ""));
     }
     
+    if (quoteSearch.trim()) {
+      filtered = filtered.filter(q => 
+        q.text.toLowerCase().includes(quoteSearch.toLowerCase()) ||
+        q.author.toLowerCase().includes(quoteSearch.toLowerCase())
+      );
+    }
+    
     return filtered;
-  }, [filterAuthors, filterCategories]);
+  }, [filterAuthors, filterCategories, quoteSearch]);
 
   const handleQuoteSelect = (quote: Quote) => {
     setSelectedQuote(quote);
@@ -183,6 +191,18 @@ export default function Home() {
                   <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                     <Filter className="w-4 h-4" />
                     Filters
+                  </div>
+
+                  {/* Quote Search */}
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={quoteSearch}
+                      onChange={(e) => setQuoteSearch(e.target.value)}
+                      placeholder="Search quotes..."
+                      className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                    />
                   </div>
                   
                   <div className="space-y-3">
@@ -356,9 +376,16 @@ export default function Home() {
                       <p className="text-gray-600 dark:text-gray-400 text-sm italic">
                         "{quote.text}"
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                        {quote.period}
-                      </p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <p className="text-xs text-gray-500 dark:text-gray-500">
+                          {quote.period}
+                        </p>
+                        {quote.category && (
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                            {quote.category.charAt(0).toUpperCase() + quote.category.slice(1)}
+                          </span>
+                        )}
+                      </div>
                     </button>
                   ))
                 ) : (
