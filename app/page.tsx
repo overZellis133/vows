@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { philosopherQuotes, type Quote, getAllAuthors, getAllCategories } from "@/lib/quotes";
 import { cn } from "@/lib/utils";
 import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp } from "lucide-react";
@@ -22,6 +22,26 @@ export default function Home() {
   const [categorySearch, setCategorySearch] = useState("");
   const [showAllAuthors, setShowAllAuthors] = useState(false);
   const [showAllCategories, setShowAllCategories] = useState(false);
+  
+  const authorDropdownRef = useRef<HTMLDivElement>(null);
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (authorDropdownRef.current && !authorDropdownRef.current.contains(event.target as Node)) {
+        setShowAllAuthors(false);
+      }
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target as Node)) {
+        setShowAllCategories(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Filter authors and categories based on search
   const filteredAuthors = useMemo(() => {
@@ -167,7 +187,7 @@ export default function Home() {
                   
                   <div className="space-y-3">
                     {/* Philosopher Filter */}
-                    <div className="relative">
+                    <div className="relative" ref={authorDropdownRef}>
                       <div
                         onClick={() => {
                           setShowAllAuthors(!showAllAuthors);
@@ -238,7 +258,7 @@ export default function Home() {
                     </div>
 
                     {/* Theme Filter */}
-                    <div className="relative">
+                    <div className="relative" ref={categoryDropdownRef}>
                       <div
                         onClick={() => {
                           setShowAllCategories(!showAllCategories);
