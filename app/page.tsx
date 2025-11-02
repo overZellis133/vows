@@ -16,23 +16,38 @@ export default function Home() {
   const [personName, setPersonName] = useState("");
   const [relationship, setRelationship] = useState("spouse");
   const [personalContext, setPersonalContext] = useState("");
-  const [filterAuthor, setFilterAuthor] = useState<string>("all");
-  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterAuthors, setFilterAuthors] = useState<string[]>([]);
+  const [filterCategories, setFilterCategories] = useState<string[]>([]);
+  const [authorSearch, setAuthorSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
+
+  // Filter authors and categories based on search
+  const filteredAuthors = useMemo(() => {
+    return getAllAuthors().filter(author => 
+      author.toLowerCase().includes(authorSearch.toLowerCase())
+    );
+  }, [authorSearch]);
+
+  const filteredCategories = useMemo(() => {
+    return getAllCategories().filter(category => 
+      category.toLowerCase().includes(categorySearch.toLowerCase())
+    );
+  }, [categorySearch]);
 
   // Filter quotes based on selected filters
   const filteredQuotes = useMemo(() => {
     let filtered = philosopherQuotes;
     
-    if (filterAuthor !== "all") {
-      filtered = filtered.filter(q => q.author === filterAuthor);
+    if (filterAuthors.length > 0) {
+      filtered = filtered.filter(q => filterAuthors.includes(q.author));
     }
     
-    if (filterCategory !== "all") {
-      filtered = filtered.filter(q => q.category === filterCategory);
+    if (filterCategories.length > 0) {
+      filtered = filtered.filter(q => filterCategories.includes(q.category || ""));
     }
     
     return filtered;
-  }, [filterAuthor, filterCategory]);
+  }, [filterAuthors, filterCategories]);
 
   const handleQuoteSelect = (quote: Quote) => {
     setSelectedQuote(quote);
@@ -148,36 +163,92 @@ export default function Home() {
                     Filters
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Author Filter */}
-                    <div>
-                      <select
-                        value={filterAuthor}
-                        onChange={(e) => setFilterAuthor(e.target.value)}
+                  <div className="space-y-3">
+                    {/* Philosopher Filter */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={authorSearch}
+                        onChange={(e) => setAuthorSearch(e.target.value)}
+                        placeholder="Search philosophers..."
                         className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                      >
-                        <option value="all">All Authors</option>
-                        {getAllAuthors().map(author => (
-                          <option key={author} value={author}>{author}</option>
-                        ))}
-                      </select>
+                      />
+                      {authorSearch && filteredAuthors.length > 0 && (
+                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+                          {filteredAuthors.map(author => (
+                            <button
+                              key={author}
+                              onClick={() => {
+                                if (!filterAuthors.includes(author)) {
+                                  setFilterAuthors([...filterAuthors, author]);
+                                }
+                                setAuthorSearch("");
+                              }}
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-rose-50 dark:hover:bg-gray-700"
+                            >
+                              {author}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
-                    {/* Category Filter */}
-                    <div>
-                      <select
-                        value={filterCategory}
-                        onChange={(e) => setFilterCategory(e.target.value)}
+                    {/* Theme Filter */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={categorySearch}
+                        onChange={(e) => setCategorySearch(e.target.value)}
+                        placeholder="Search themes..."
                         className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                      >
-                        <option value="all">All Themes</option>
-                        {getAllCategories().map(category => (
-                          <option key={category} value={category}>
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                          </option>
-                        ))}
-                      </select>
+                      />
+                      {categorySearch && filteredCategories.length > 0 && (
+                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+                          {filteredCategories.map(category => (
+                            <button
+                              key={category}
+                              onClick={() => {
+                                if (!filterCategories.includes(category)) {
+                                  setFilterCategories([...filterCategories, category]);
+                                }
+                                setCategorySearch("");
+                              }}
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-rose-50 dark:hover:bg-gray-700"
+                            >
+                              {category.charAt(0).toUpperCase() + category.slice(1)}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
+
+                    {/* Selected Filters */}
+                    {(filterAuthors.length > 0 || filterCategories.length > 0) && (
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {filterAuthors.map(author => (
+                          <span key={author} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 rounded-full">
+                            {author}
+                            <button
+                              onClick={() => setFilterAuthors(filterAuthors.filter(a => a !== author))}
+                              className="hover:text-rose-600 dark:hover:text-rose-300"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                        {filterCategories.map(category => (
+                          <span key={category} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                            <button
+                              onClick={() => setFilterCategories(filterCategories.filter(c => c !== category))}
+                              className="hover:text-blue-600 dark:hover:text-blue-300"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Results count */}
