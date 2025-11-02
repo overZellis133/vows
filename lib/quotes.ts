@@ -162,3 +162,12 @@ export function getAllCategories(): string[] {
   return Array.from(categories);
 }
 
+export function getQuotesByAuthor(author: string): Quote[] {
+  return philosopherQuotes.filter(quote => quote.author === author);
+}
+
+export function getAllAuthors(): string[] {
+  const authors = new Set(philosopherQuotes.map(q => q.author));
+  return Array.from(authors).sort();
+}
+

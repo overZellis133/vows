@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { philosopherQuotes, type Quote } from "@/lib/quotes";
+import { useState, useMemo } from "react";
+import { philosopherQuotes, type Quote, getAllAuthors, getAllCategories } from "@/lib/quotes";
 import { cn } from "@/lib/utils";
-import { Loader2, Heart, BookOpen, FileText } from "lucide-react";
+import { Loader2, Heart, BookOpen, FileText, Filter } from "lucide-react";
 
 type QuoteSource = "philosophers" | "readwise";
 
@@ -16,6 +16,23 @@ export default function Home() {
   const [personName, setPersonName] = useState("");
   const [relationship, setRelationship] = useState("spouse");
   const [personalContext, setPersonalContext] = useState("");
+  const [filterAuthor, setFilterAuthor] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+
+  // Filter quotes based on selected filters
+  const filteredQuotes = useMemo(() => {
+    let filtered = philosopherQuotes;
+    
+    if (filterAuthor !== "all") {
+      filtered = filtered.filter(q => q.author === filterAuthor);
+    }
+    
+    if (filterCategory !== "all") {
+      filtered = filtered.filter(q => q.category === filterCategory);
+    }
+    
+    return filtered;
+  }, [filterAuthor, filterCategory]);
 
   const handleQuoteSelect = (quote: Quote) => {
     setSelectedQuote(quote);
@@ -123,10 +140,57 @@ export default function Home() {
                 </button>
               </div>
 
+              {/* Filters */}
+              {selectedSource === "philosophers" && (
+                <div className="mb-4 space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Filter className="w-4 h-4" />
+                    Filters
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Author Filter */}
+                    <div>
+                      <select
+                        value={filterAuthor}
+                        onChange={(e) => setFilterAuthor(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                      >
+                        <option value="all">All Authors</option>
+                        {getAllAuthors().map(author => (
+                          <option key={author} value={author}>{author}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Category Filter */}
+                    <div>
+                      <select
+                        value={filterCategory}
+                        onChange={(e) => setFilterCategory(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                      >
+                        <option value="all">All Themes</option>
+                        {getAllCategories().map(category => (
+                          <option key={category} value={category}>
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Results count */}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                    {filteredQuotes.length} quote{filteredQuotes.length !== 1 ? 's' : ''} found
+                  </p>
+                </div>
+              )}
+
               {/* Quote List */}
               <div className="space-y-3 max-h-[500px] overflow-y-auto">
                 {selectedSource === "philosophers" ? (
-                  philosopherQuotes.map((quote) => (
+                  filteredQuotes.map((quote) => (
                     <button
                       key={quote.id}
                       onClick={() => handleQuoteSelect(quote)}
