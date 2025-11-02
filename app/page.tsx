@@ -1044,63 +1044,68 @@ export default function Home() {
                                   : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
                               )}
                             >
-                            {/* Book Image */}
-                            {highlight.book?.cover_image_url && (
-                              <div className="mb-2">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={highlight.book.cover_image_url}
-                                  alt={highlight.book.title || "Book cover"}
-                                  className="h-16 w-auto rounded border border-gray-200 dark:border-gray-700"
-                                  onError={(e) => {
-                                    // Hide image if it fails to load
-                                    (e.target as HTMLImageElement).style.display = 'none';
-                                  }}
-                                />
+                            <div className="flex gap-3">
+                              {/* Book Image */}
+                              {highlight.book?.cover_image_url && (
+                                <div className="flex-shrink-0">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={highlight.book.cover_image_url}
+                                    alt={highlight.book.title || "Book cover"}
+                                    className="max-h-32 w-auto rounded border border-gray-200 dark:border-gray-700"
+                                    onError={(e) => {
+                                      // Hide image if it fails to load
+                                      (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                  />
+                                </div>
+                              )}
+                              
+                              {/* Content */}
+                              <div className="flex-1 min-w-0">
+                                {/* Author and Title */}
+                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                  {highlight.book?.author ? highlightText(highlight.book.author, readwiseQuoteSearch) : 
+                                   highlight.book?.title ? highlightText(highlight.book.title, readwiseQuoteSearch) : 
+                                   "Unknown"}
+                                </p>
+                                
+                                {/* Quote Text */}
+                                <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-2">
+                                  &ldquo;{highlightText(highlight.text, readwiseQuoteSearch)}&rdquo;
+                                </p>
+                                
+                                {/* Metadata Row */}
+                                <div className="flex items-center gap-2 flex-wrap text-xs text-gray-500 dark:text-gray-500">
+                                  {highlight.book?.title && highlight.book?.author && (
+                                    <span className="inline-flex items-center gap-1">
+                                      <BookOpen className="w-3 h-3" />
+                                      {highlightText(highlight.book.title, readwiseQuoteSearch)}
+                                    </span>
+                                  )}
+                                  {highlight.book?.category && (
+                                    <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                                      {highlight.book.category.charAt(0).toUpperCase() + highlight.book.category.slice(1)}
+                                    </span>
+                                  )}
+                                  {highlight.highlighted_at && (
+                                    <span className="inline-flex items-center gap-1">
+                                      📅 {new Date(highlight.highlighted_at).toLocaleDateString()}
+                                    </span>
+                                  )}
+                                  {highlight.url && (
+                                    <a
+                                      href={highlight.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 hover:underline"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      🔗 View highlight
+                                    </a>
+                                  )}
+                                </div>
                               </div>
-                            )}
-                            
-                            {/* Author and Title */}
-                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                              {highlight.book?.author ? highlightText(highlight.book.author, readwiseQuoteSearch) : 
-                               highlight.book?.title ? highlightText(highlight.book.title, readwiseQuoteSearch) : 
-                               "Unknown"}
-                            </p>
-                            
-                            {/* Quote Text */}
-                            <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-2">
-                              &ldquo;{highlightText(highlight.text, readwiseQuoteSearch)}&rdquo;
-                            </p>
-                            
-                            {/* Metadata Row */}
-                            <div className="flex items-center gap-2 flex-wrap text-xs text-gray-500 dark:text-gray-500">
-                              {highlight.book?.title && highlight.book?.author && (
-                                <span className="inline-flex items-center gap-1">
-                                  <BookOpen className="w-3 h-3" />
-                                  {highlightText(highlight.book.title, readwiseQuoteSearch)}
-                                </span>
-                              )}
-                              {highlight.book?.category && (
-                                <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-                                  {highlight.book.category.charAt(0).toUpperCase() + highlight.book.category.slice(1)}
-                                </span>
-                              )}
-                              {highlight.highlighted_at && (
-                                <span className="inline-flex items-center gap-1">
-                                  📅 {new Date(highlight.highlighted_at).toLocaleDateString()}
-                                </span>
-                              )}
-                              {highlight.url && (
-                                <a
-                                  href={highlight.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 hover:underline"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  🔗 View highlight
-                                </a>
-                              )}
                             </div>
                             </button>
                           ))}
