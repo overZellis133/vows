@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { philosopherQuotes, type Quote, getAllAuthors, getAllCategories } from "@/lib/quotes";
 import { cn } from "@/lib/utils";
-import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp, Search } from "lucide-react";
+import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import type { ReadwiseHighlight } from "@/lib/readwise";
 
 type QuoteSource = "philosophers" | "readwise";
@@ -923,42 +923,55 @@ export default function Home() {
                               </div>
 
                               {/* Date Range Filter */}
-                              <div className="space-y-2">
-                                <div className="grid grid-cols-2 gap-2">
-                                  <div>
-                                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                      From date
-                                    </label>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                  <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                    From date
+                                  </label>
+                                  <div className="relative">
                                     <input
                                       type="date"
                                       value={readwiseDateStart}
                                       onChange={(e) => setReadwiseDateStart(e.target.value)}
-                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                                      className={cn(
+                                        "w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent",
+                                        readwiseDateStart && "pr-8"
+                                      )}
                                     />
+                                    {readwiseDateStart && (
+                                      <button
+                                        onClick={() => setReadwiseDateStart("")}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-red-50 dark:hover:bg-red-950/30 rounded transition-colors"
+                                      >
+                                        <X className="w-3 h-3 text-red-500" />
+                                      </button>
+                                    )}
                                   </div>
-                                  <div>
-                                    <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                      To date
-                                    </label>
+                                </div>
+                                <div>
+                                  <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                    To date
+                                  </label>
+                                  <div className="relative">
                                     <input
                                       type="date"
                                       value={readwiseDateEnd}
                                       onChange={(e) => setReadwiseDateEnd(e.target.value)}
-                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                                      className={cn(
+                                        "w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent",
+                                        readwiseDateEnd && "pr-8"
+                                      )}
                                     />
+                                    {readwiseDateEnd && (
+                                      <button
+                                        onClick={() => setReadwiseDateEnd("")}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-red-50 dark:hover:bg-red-950/30 rounded transition-colors"
+                                      >
+                                        <X className="w-3 h-3 text-red-500" />
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
-                                {(readwiseDateStart || readwiseDateEnd) && (
-                                  <button
-                                    onClick={() => {
-                                      setReadwiseDateStart("");
-                                      setReadwiseDateEnd("");
-                                    }}
-                                    className="w-full text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 underline"
-                                  >
-                                    Clear dates
-                                  </button>
-                                )}
                               </div>
                             </>
                           )}
