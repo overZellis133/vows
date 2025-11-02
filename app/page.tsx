@@ -80,6 +80,22 @@ export default function Home() {
     return filtered;
   }, [filterAuthors, filterCategories, quoteSearch]);
 
+  // Highlight search terms in text
+  const highlightText = (text: string, searchTerm: string) => {
+    if (!searchTerm.trim()) return text;
+    
+    const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <mark key={index} className="bg-yellow-200 dark:bg-yellow-900/50 text-gray-900 dark:text-gray-100 rounded px-0.5">
+          {part}
+        </mark>
+      ) : part
+    );
+  };
+
   const handleQuoteSelect = (quote: Quote) => {
     setSelectedQuote(quote);
   };
@@ -201,10 +217,10 @@ export default function Home() {
                     </button>
                   </div>
                   <p className="text-gray-700 dark:text-gray-300 text-sm italic mb-1">
-                    "{selectedQuote.text}"
+                    "{highlightText(selectedQuote.text, quoteSearch)}"
                   </p>
                   <p className="text-xs text-rose-900 dark:text-rose-300">
-                    — {selectedQuote.author}
+                    — {highlightText(selectedQuote.author, quoteSearch)}
                   </p>
                 </div>
               )}
@@ -403,10 +419,10 @@ export default function Home() {
                       )}
                     >
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        {quote.author}
+                        {highlightText(quote.author, quoteSearch)}
                       </p>
                       <p className="text-gray-600 dark:text-gray-400 text-sm italic">
-                        "{quote.text}"
+                        "{highlightText(quote.text, quoteSearch)}"
                       </p>
                       <div className="flex items-center gap-2 mt-2">
                         <p className="text-xs text-gray-500 dark:text-gray-500">
