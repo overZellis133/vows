@@ -254,12 +254,13 @@ export default function Home() {
                       <div className="space-y-3">
                         {/* Philosopher Filter */}
                         <div className="relative" ref={authorDropdownRef}>
-                          <div
+                          <button
+                            type="button"
                             onClick={() => {
                               setShowAllAuthors(!showAllAuthors);
                               setShowAllCategories(false);
                             }}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors text-left"
                           >
                             <div className="flex items-center gap-2 flex-wrap">
                               {filterAuthors.length === 0 ? (
@@ -282,7 +283,7 @@ export default function Home() {
                               )}
                             </div>
                             <ChevronDown className={cn("w-4 h-4 transition-transform", showAllAuthors && "rotate-180")} />
-                          </div>
+                          </button>
                           {showAllAuthors && (
                             <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                               <div className="p-2 border-b border-gray-200 dark:border-gray-700">
@@ -325,12 +326,13 @@ export default function Home() {
 
                         {/* Theme Filter */}
                         <div className="relative" ref={categoryDropdownRef}>
-                          <div
+                          <button
+                            type="button"
                             onClick={() => {
                               setShowAllCategories(!showAllCategories);
                               setShowAllAuthors(false);
                             }}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors text-left"
                           >
                             <div className="flex items-center gap-2 flex-wrap">
                               {filterCategories.length === 0 ? (
@@ -353,7 +355,7 @@ export default function Home() {
                               )}
                             </div>
                             <ChevronDown className={cn("w-4 h-4 transition-transform", showAllCategories && "rotate-180")} />
-                          </div>
+                          </button>
                           {showAllCategories && (
                             <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                               <div className="p-2 border-b border-gray-200 dark:border-gray-700">
