@@ -51,6 +51,8 @@ export default function Home() {
   const readwiseTitleDropdownRef = useRef<HTMLDivElement>(null);
   
   // Search input refs for autofocus
+  const authorSearchRef = useRef<HTMLInputElement>(null);
+  const categorySearchRef = useRef<HTMLInputElement>(null);
   const readwiseAuthorSearchRef = useRef<HTMLInputElement>(null);
   const readwiseCategorySearchRef = useRef<HTMLInputElement>(null);
   const readwiseTitleSearchRef = useRef<HTMLInputElement>(null);
@@ -90,6 +92,18 @@ export default function Home() {
   }, [copied]);
 
   // Autofocus search inputs when dropdowns open
+  useEffect(() => {
+    if (showAllAuthors && authorSearchRef.current) {
+      authorSearchRef.current.focus();
+    }
+  }, [showAllAuthors]);
+
+  useEffect(() => {
+    if (showAllCategories && categorySearchRef.current) {
+      categorySearchRef.current.focus();
+    }
+  }, [showAllCategories]);
+
   useEffect(() => {
     if (showReadwiseAuthors && readwiseAuthorSearchRef.current) {
       readwiseAuthorSearchRef.current.focus();
@@ -480,6 +494,7 @@ export default function Home() {
                             <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                               <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                                 <input
+                                  ref={authorSearchRef}
                                   type="text"
                                   value={authorSearch}
                                   onChange={(e) => setAuthorSearch(e.target.value)}
@@ -552,6 +567,7 @@ export default function Home() {
                             <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                               <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                                 <input
+                                  ref={categorySearchRef}
                                   type="text"
                                   value={categorySearch}
                                   onChange={(e) => setCategorySearch(e.target.value)}
