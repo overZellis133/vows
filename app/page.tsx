@@ -24,6 +24,7 @@ export default function Home() {
   const [showAllAuthors, setShowAllAuthors] = useState(false);
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
+  const [copied, setCopied] = useState(false);
   
   const authorDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,14 @@ export default function Home() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Reset copied state after 2 seconds
+  useEffect(() => {
+    if (copied) {
+      const timer = setTimeout(() => setCopied(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copied]);
 
   // Filter authors and categories based on search
   const filteredAuthors = useMemo(() => {
@@ -556,10 +565,18 @@ export default function Home() {
                       Your Vows
                     </h3>
                     <button
-                      onClick={() => navigator.clipboard.writeText(vows)}
-                      className="text-sm text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-200"
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(vows);
+                        setCopied(true);
+                      }}
+                      className={cn(
+                        "text-sm font-medium transition-colors",
+                        copied
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-200"
+                      )}
                     >
-                      Copy
+                      {copied ? "Copied!" : "Copy"}
                     </button>
                   </div>
                   <textarea
