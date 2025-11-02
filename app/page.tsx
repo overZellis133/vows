@@ -278,15 +278,15 @@ export default function Home() {
                                 filterAuthors.map(author => (
                                   <span key={author} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 rounded-full">
                                     {author}
-                                    <button
+                                    <span
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         setFilterAuthors(filterAuthors.filter(a => a !== author));
                                       }}
-                                      className="hover:text-rose-600 dark:hover:text-rose-300"
+                                      className="hover:text-rose-600 dark:hover:text-rose-300 cursor-pointer"
                                     >
                                       ×
-                                    </button>
+                                    </span>
                                   </span>
                                 ))
                               )}
@@ -350,15 +350,15 @@ export default function Home() {
                                 filterCategories.map(category => (
                                   <span key={category} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
                                     {category.charAt(0).toUpperCase() + category.slice(1)}
-                                    <button
+                                    <span
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         setFilterCategories(filterCategories.filter(c => c !== category));
                                       }}
-                                      className="hover:text-blue-600 dark:hover:text-blue-300"
+                                      className="hover:text-blue-600 dark:hover:text-blue-300 cursor-pointer"
                                     >
                                       ×
-                                    </button>
+                                    </span>
                                   </span>
                                 ))
                               )}
