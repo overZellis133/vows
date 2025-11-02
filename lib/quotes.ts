@@ -158,7 +158,7 @@ export function getQuotesByCategory(category: string): Quote[] {
 }
 
 export function getAllCategories(): string[] {
-  const categories = new Set(philosopherQuotes.map(q => q.category).filter(Boolean));
+  const categories = new Set(philosopherQuotes.map(q => q.category).filter((cat): cat is string => Boolean(cat)));
   return Array.from(categories);
 }
 

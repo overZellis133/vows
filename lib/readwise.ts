@@ -59,7 +59,7 @@ export async function fetchReadwiseHighlightsPaginated(
   let nextCursor: string | null = null;
 
   do {
-    const url = nextCursor
+    const url: string = nextCursor
       ? `https://readwise.io/api/v2/highlights/?page_size=${pageSize}&page_cursor=${nextCursor}`
       : `https://readwise.io/api/v2/highlights/?page_size=${pageSize}`;
 
