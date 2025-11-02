@@ -486,43 +486,57 @@ export default function Home() {
                   ))
                 ) : (
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Readwise API Key
-                      </label>
-                      <input
-                        type="password"
-                        value={readwiseApiKey}
-                        onChange={(e) => setReadwiseApiKey(e.target.value)}
-                        placeholder="Enter your Readwise access token..."
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent text-sm"
-                      />
-                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        Get your access token from{" "}
-                        <a href="https://readwise.io/access_token" target="_blank" rel="noopener noreferrer" className="text-rose-600 dark:text-rose-400 hover:underline">
-                          readwise.io/access_token
-                        </a>
-                      </p>
-                    </div>
-                    <button
-                      onClick={fetchReadwiseHighlights}
-                      disabled={isLoadingReadwise || !readwiseApiKey.trim()}
-                      className={cn(
-                        "w-full px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2",
-                        isLoadingReadwise || !readwiseApiKey.trim()
-                          ? "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600"
-                          : "bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:from-rose-600 hover:to-pink-600"
-                      )}
-                    >
-                      {isLoadingReadwise ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          Loading...
-                        </>
-                      ) : (
-                        "Load My Highlights"
-                      )}
-                    </button>
+                    {readwiseHighlights.length === 0 && (
+                      <>
+                        <div className="text-center py-4">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                            Connect your Readwise account to use your saved highlights
+                          </p>
+                          <a
+                            href="https://readwise.io/access_token"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-medium hover:from-rose-600 hover:to-pink-600 transition-all"
+                          >
+                            Get Readwise Access Token
+                          </a>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Readwise Access Token
+                          </label>
+                          <input
+                            type="password"
+                            value={readwiseApiKey}
+                            onChange={(e) => setReadwiseApiKey(e.target.value)}
+                            placeholder="Paste your access token here..."
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent text-sm"
+                          />
+                          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            Your token stays in your browser and is never sent to our servers
+                          </p>
+                        </div>
+                        <button
+                          onClick={fetchReadwiseHighlights}
+                          disabled={isLoadingReadwise || !readwiseApiKey.trim()}
+                          className={cn(
+                            "w-full px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2",
+                            isLoadingReadwise || !readwiseApiKey.trim()
+                              ? "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600"
+                              : "bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:from-rose-600 hover:to-pink-600"
+                          )}
+                        >
+                          {isLoadingReadwise ? (
+                            <>
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                              Loading...
+                            </>
+                          ) : (
+                            "Load My Highlights"
+                          )}
+                        </button>
+                      </>
+                    )}
                     {readwiseError && (
                       <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg text-red-700 dark:text-red-400 text-sm">
                         {readwiseError}
