@@ -30,9 +30,19 @@ export default function Home() {
   const [readwiseHighlights, setReadwiseHighlights] = useState<ReadwiseHighlight[]>([]);
   const [isLoadingReadwise, setIsLoadingReadwise] = useState(false);
   const [readwiseError, setReadwiseError] = useState<string | null>(null);
+  const [readwiseFiltersCollapsed, setReadwiseFiltersCollapsed] = useState(false);
+  const [readwiseQuoteSearch, setReadwiseQuoteSearch] = useState("");
+  const [readwiseFilterAuthors, setReadwiseFilterAuthors] = useState<string[]>([]);
+  const [readwiseFilterCategories, setReadwiseFilterCategories] = useState<string[]>([]);
+  const [readwiseAuthorSearch, setReadwiseAuthorSearch] = useState("");
+  const [readwiseCategorySearch, setReadwiseCategorySearch] = useState("");
+  const [showReadwiseAuthors, setShowReadwiseAuthors] = useState(false);
+  const [showReadwiseCategories, setShowReadwiseCategories] = useState(false);
   
   const authorDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const readwiseAuthorDropdownRef = useRef<HTMLDivElement>(null);
+  const readwiseCategoryDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -42,6 +52,12 @@ export default function Home() {
       }
       if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target as Node)) {
         setShowAllCategories(false);
+      }
+      if (readwiseAuthorDropdownRef.current && !readwiseAuthorDropdownRef.current.contains(event.target as Node)) {
+        setShowReadwiseAuthors(false);
+      }
+      if (readwiseCategoryDropdownRef.current && !readwiseCategoryDropdownRef.current.contains(event.target as Node)) {
+        setShowReadwiseCategories(false);
       }
     };
 
@@ -93,6 +109,67 @@ export default function Home() {
     
     return filtered;
   }, [filterAuthors, filterCategories, quoteSearch]);
+
+  // Get unique authors and categories from Readwise highlights
+  const readwiseAuthors = useMemo(() => {
+    const authors = new Set<string>();
+    readwiseHighlights.forEach(highlight => {
+      if (highlight.document?.author) {
+        authors.add(highlight.document.author);
+      }
+    });
+    return Array.from(authors).sort();
+  }, [readwiseHighlights]);
+
+  const readwiseCategories = useMemo(() => {
+    const categories = new Set<string>();
+    readwiseHighlights.forEach(highlight => {
+      if (highlight.document?.category) {
+        categories.add(highlight.document.category);
+      }
+    });
+    return Array.from(categories).sort();
+  }, [readwiseHighlights]);
+
+  // Filter Readwise authors and categories based on search
+  const filteredReadwiseAuthors = useMemo(() => {
+    return readwiseAuthors.filter(author => 
+      author.toLowerCase().includes(readwiseAuthorSearch.toLowerCase())
+    );
+  }, [readwiseAuthors, readwiseAuthorSearch]);
+
+  const filteredReadwiseCategories = useMemo(() => {
+    return readwiseCategories.filter(category => 
+      category.toLowerCase().includes(readwiseCategorySearch.toLowerCase())
+    );
+  }, [readwiseCategories, readwiseCategorySearch]);
+
+  // Filter Readwise highlights based on selected filters
+  const filteredReadwiseHighlights = useMemo(() => {
+    let filtered = readwiseHighlights;
+    
+    if (readwiseFilterAuthors.length > 0) {
+      filtered = filtered.filter(h => 
+        readwiseFilterAuthors.includes(h.document?.author || "")
+      );
+    }
+    
+    if (readwiseFilterCategories.length > 0) {
+      filtered = filtered.filter(h => 
+        readwiseFilterCategories.includes(h.document?.category || "")
+      );
+    }
+    
+    if (readwiseQuoteSearch.trim()) {
+      filtered = filtered.filter(h => 
+        h.text.toLowerCase().includes(readwiseQuoteSearch.toLowerCase()) ||
+        (h.document?.author || "").toLowerCase().includes(readwiseQuoteSearch.toLowerCase()) ||
+        (h.document?.title || "").toLowerCase().includes(readwiseQuoteSearch.toLowerCase())
+      );
+    }
+    
+    return filtered;
+  }, [readwiseHighlights, readwiseFilterAuthors, readwiseFilterCategories, readwiseQuoteSearch]);
 
   // Highlight search terms in text
   const highlightText = (text: string, searchTerm: string) => {
@@ -543,40 +620,233 @@ export default function Home() {
                       </div>
                     )}
                     {readwiseHighlights.length > 0 && (
-                      <div className="space-y-3 max-h-[500px] overflow-y-auto">
-                        {readwiseHighlights.map((highlight) => (
+                      <>
+                        {/* Readwise Filters */}
+                        <div className="mb-4 space-y-3">
                           <button
-                            key={highlight.id}
-                            onClick={() => {
-                              setSelectedQuote({
-                                id: `readwise-${highlight.id}`,
-                                text: highlight.text,
-                                author: highlight.document?.author || highlight.document?.title || "Unknown",
-                                period: highlight.document?.category || "Readwise",
-                                category: undefined,
-                              });
-                            }}
-                            className={cn(
-                              "w-full text-left p-4 rounded-lg border-2 transition-all",
-                              selectedQuote?.id === `readwise-${highlight.id}`
-                                ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
-                                : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
-                            )}
+                            onClick={() => setReadwiseFiltersCollapsed(!readwiseFiltersCollapsed)}
+                            className="w-full flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
                           >
-                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                              {highlight.document?.author || highlight.document?.title || "Unknown"}
-                            </p>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm italic">
-                              &ldquo;{highlight.text}&rdquo;
-                            </p>
-                            {highlight.document?.title && (
-                              <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                                {highlight.document.title}
-                              </p>
-                            )}
+                            <Filter className="w-4 h-4" />
+                            <span>Filters</span>
+                            {readwiseFiltersCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
                           </button>
-                        ))}
-                      </div>
+
+                          {!readwiseFiltersCollapsed && (
+                            <>
+                              {/* Quote Search */}
+                              <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <input
+                                  type="text"
+                                  value={readwiseQuoteSearch}
+                                  onChange={(e) => setReadwiseQuoteSearch(e.target.value)}
+                                  placeholder="Search highlights..."
+                                  className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                                />
+                              </div>
+                              
+                              <div className="space-y-3">
+                                {/* Author Filter */}
+                                {readwiseAuthors.length > 0 && (
+                                  <div className="relative" ref={readwiseAuthorDropdownRef}>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setShowReadwiseAuthors(!showReadwiseAuthors);
+                                        setShowReadwiseCategories(false);
+                                      }}
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors text-left"
+                                    >
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        {readwiseFilterAuthors.length === 0 ? (
+                                          <span className="text-gray-500 dark:text-gray-400">Select authors...</span>
+                                        ) : (
+                                          readwiseFilterAuthors.map(author => (
+                                            <span key={author} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 rounded-full">
+                                              {author}
+                                              <span
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setReadwiseFilterAuthors(readwiseFilterAuthors.filter(a => a !== author));
+                                                }}
+                                                className="hover:text-rose-600 dark:hover:text-rose-300 cursor-pointer"
+                                              >
+                                                ×
+                                              </span>
+                                            </span>
+                                          ))
+                                        )}
+                                      </div>
+                                      <ChevronDown className={cn("w-4 h-4 transition-transform", showReadwiseAuthors && "rotate-180")} />
+                                    </button>
+                                    {showReadwiseAuthors && (
+                                      <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                        <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                                          <input
+                                            type="text"
+                                            value={readwiseAuthorSearch}
+                                            onChange={(e) => setReadwiseAuthorSearch(e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            placeholder="Search..."
+                                            className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900"
+                                          />
+                                        </div>
+                                        <div className="max-h-48 overflow-y-auto">
+                                          {(readwiseAuthorSearch ? filteredReadwiseAuthors : readwiseAuthors).map(author => (
+                                            <button
+                                              key={author}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (readwiseFilterAuthors.includes(author)) {
+                                                  setReadwiseFilterAuthors(readwiseFilterAuthors.filter(a => a !== author));
+                                                } else {
+                                                  setReadwiseFilterAuthors([...readwiseFilterAuthors, author]);
+                                                }
+                                              }}
+                                              className={cn(
+                                                "w-full text-left px-3 py-2 text-sm hover:bg-rose-50 dark:hover:bg-gray-700 flex items-center gap-2",
+                                                readwiseFilterAuthors.includes(author) && "bg-rose-50 dark:bg-gray-700"
+                                              )}
+                                            >
+                                              <span className={cn("w-3 h-3 border rounded flex items-center justify-center", readwiseFilterAuthors.includes(author) ? "bg-rose-500 border-rose-500" : "border-gray-300")}>
+                                                {readwiseFilterAuthors.includes(author) && <span className="text-white text-xs">✓</span>}
+                                              </span>
+                                              {author}
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+
+                                {/* Category Filter */}
+                                {readwiseCategories.length > 0 && (
+                                  <div className="relative" ref={readwiseCategoryDropdownRef}>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setShowReadwiseCategories(!showReadwiseCategories);
+                                        setShowReadwiseAuthors(false);
+                                      }}
+                                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 cursor-pointer flex items-center justify-between hover:border-gray-400 dark:hover:border-gray-600 transition-colors text-left"
+                                    >
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        {readwiseFilterCategories.length === 0 ? (
+                                          <span className="text-gray-500 dark:text-gray-400">Select categories...</span>
+                                        ) : (
+                                          readwiseFilterCategories.map(category => (
+                                            <span key={category} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+                                              {category.charAt(0).toUpperCase() + category.slice(1)}
+                                              <span
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  setReadwiseFilterCategories(readwiseFilterCategories.filter(c => c !== category));
+                                                }}
+                                                className="hover:text-blue-600 dark:hover:text-blue-300 cursor-pointer"
+                                              >
+                                                ×
+                                              </span>
+                                            </span>
+                                          ))
+                                        )}
+                                      </div>
+                                      <ChevronDown className={cn("w-4 h-4 transition-transform", showReadwiseCategories && "rotate-180")} />
+                                    </button>
+                                    {showReadwiseCategories && (
+                                      <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                        <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                                          <input
+                                            type="text"
+                                            value={readwiseCategorySearch}
+                                            onChange={(e) => setReadwiseCategorySearch(e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            placeholder="Search..."
+                                            className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900"
+                                          />
+                                        </div>
+                                        <div className="max-h-48 overflow-y-auto">
+                                          {(readwiseCategorySearch ? filteredReadwiseCategories : readwiseCategories).map(category => (
+                                            <button
+                                              key={category}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (readwiseFilterCategories.includes(category)) {
+                                                  setReadwiseFilterCategories(readwiseFilterCategories.filter(c => c !== category));
+                                                } else {
+                                                  setReadwiseFilterCategories([...readwiseFilterCategories, category]);
+                                                }
+                                              }}
+                                              className={cn(
+                                                "w-full text-left px-3 py-2 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center gap-2",
+                                                readwiseFilterCategories.includes(category) && "bg-blue-50 dark:bg-gray-700"
+                                              )}
+                                            >
+                                              <span className={cn("w-3 h-3 border rounded flex items-center justify-center", readwiseFilterCategories.includes(category) ? "bg-blue-500 border-blue-500" : "border-gray-300")}>
+                                                {readwiseFilterCategories.includes(category) && <span className="text-white text-xs">✓</span>}
+                                              </span>
+                                              {category.charAt(0).toUpperCase() + category.slice(1)}
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Results count */}
+                              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                                {filteredReadwiseHighlights.length} highlight{filteredReadwiseHighlights.length !== 1 ? 's' : ''} found
+                              </p>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Highlights List */}
+                        <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                          {filteredReadwiseHighlights.map((highlight) => (
+                            <button
+                              key={highlight.id}
+                              onClick={() => {
+                                setSelectedQuote({
+                                  id: `readwise-${highlight.id}`,
+                                  text: highlight.text,
+                                  author: highlight.document?.author || highlight.document?.title || "Unknown",
+                                  period: highlight.document?.category || "Readwise",
+                                  category: undefined,
+                                });
+                              }}
+                              className={cn(
+                                "w-full text-left p-4 rounded-lg border-2 transition-all",
+                                selectedQuote?.id === `readwise-${highlight.id}`
+                                  ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
+                                  : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
+                              )}
+                            >
+                              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {highlightText(highlight.document?.author || "Unknown", readwiseQuoteSearch)}
+                              </p>
+                              <p className="text-gray-600 dark:text-gray-400 text-sm italic">
+                                &ldquo;{highlightText(highlight.text, readwiseQuoteSearch)}&rdquo;
+                              </p>
+                              <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                {highlight.document?.title && (
+                                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                                    {highlightText(highlight.document.title, readwiseQuoteSearch)}
+                                  </p>
+                                )}
+                                {highlight.document?.category && (
+                                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                                    {highlight.document.category.charAt(0).toUpperCase() + highlight.document.category.slice(1)}
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
