@@ -76,7 +76,18 @@ export async function fetchReadwiseHighlightsPaginated(
 
       const data = await response.json();
       allHighlights = [...allHighlights, ...(data.results || [])];
-      nextCursor = data.next || null;
+      
+      // Extract cursor from next URL
+      if (data.next) {
+        try {
+          const nextUrl = new URL(data.next);
+          nextCursor = nextUrl.searchParams.get("page_cursor");
+        } catch {
+          nextCursor = null;
+        }
+      } else {
+        nextCursor = null;
+      }
     } catch (error) {
       console.error("Error fetching Readwise highlights:", error);
       throw error;

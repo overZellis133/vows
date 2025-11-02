@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { philosopherQuotes, type Quote, getAllAuthors, getAllCategories } from "@/lib/quotes";
 import { cn } from "@/lib/utils";
 import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp, Search } from "lucide-react";
+import type { ReadwiseHighlight } from "@/lib/readwise";
 
 type QuoteSource = "philosophers" | "readwise";
 
@@ -25,6 +26,10 @@ export default function Home() {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [readwiseApiKey, setReadwiseApiKey] = useState("");
+  const [readwiseHighlights, setReadwiseHighlights] = useState<ReadwiseHighlight[]>([]);
+  const [isLoadingReadwise, setIsLoadingReadwise] = useState(false);
+  const [readwiseError, setReadwiseError] = useState<string | null>(null);
   
   const authorDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
@@ -148,6 +153,38 @@ export default function Home() {
       console.error(err);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const fetchReadwiseHighlights = async () => {
+    if (!readwiseApiKey.trim()) {
+      setReadwiseError("Please enter your Readwise API key");
+      return;
+    }
+
+    setIsLoadingReadwise(true);
+    setReadwiseError(null);
+
+    try {
+      const response = await fetch("/api/readwise", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ apiKey: readwiseApiKey }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch Readwise highlights");
+      }
+
+      const data = await response.json();
+      setReadwiseHighlights(data.highlights);
+    } catch (err) {
+      setReadwiseError("Failed to fetch Readwise highlights. Please check your API key.");
+      console.error(err);
+    } finally {
+      setIsLoadingReadwise(false);
     }
   };
 
@@ -448,15 +485,85 @@ export default function Home() {
                     </button>
                   ))
                 ) : (
-                  <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                    <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg font-medium mb-2">Readwise Integration Coming Soon</p>
-                    <p className="text-sm">
-                      Connect your Readwise account to use your saved quotes as seeds for your vows
-                    </p>
-                    <button className="mt-4 px-6 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
-                      Learn More
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Readwise API Key
+                      </label>
+                      <input
+                        type="password"
+                        value={readwiseApiKey}
+                        onChange={(e) => setReadwiseApiKey(e.target.value)}
+                        placeholder="Enter your Readwise access token..."
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent text-sm"
+                      />
+                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        Get your access token from{" "}
+                        <a href="https://readwise.io/access_token" target="_blank" rel="noopener noreferrer" className="text-rose-600 dark:text-rose-400 hover:underline">
+                          readwise.io/access_token
+                        </a>
+                      </p>
+                    </div>
+                    <button
+                      onClick={fetchReadwiseHighlights}
+                      disabled={isLoadingReadwise || !readwiseApiKey.trim()}
+                      className={cn(
+                        "w-full px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2",
+                        isLoadingReadwise || !readwiseApiKey.trim()
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600"
+                          : "bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:from-rose-600 hover:to-pink-600"
+                      )}
+                    >
+                      {isLoadingReadwise ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          Loading...
+                        </>
+                      ) : (
+                        "Load My Highlights"
+                      )}
                     </button>
+                    {readwiseError && (
+                      <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg text-red-700 dark:text-red-400 text-sm">
+                        {readwiseError}
+                      </div>
+                    )}
+                    {readwiseHighlights.length > 0 && (
+                      <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                        {readwiseHighlights.map((highlight) => (
+                          <button
+                            key={highlight.id}
+                            onClick={() => {
+                              setSelectedQuote({
+                                id: `readwise-${highlight.id}`,
+                                text: highlight.text,
+                                author: highlight.document?.author || highlight.document?.title || "Unknown",
+                                period: highlight.document?.category || "Readwise",
+                                category: undefined,
+                              });
+                            }}
+                            className={cn(
+                              "w-full text-left p-4 rounded-lg border-2 transition-all",
+                              selectedQuote?.id === `readwise-${highlight.id}`
+                                ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
+                                : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
+                            )}
+                          >
+                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                              {highlight.document?.author || highlight.document?.title || "Unknown"}
+                            </p>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm italic">
+                              &ldquo;{highlight.text}&rdquo;
+                            </p>
+                            {highlight.document?.title && (
+                              <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                                {highlight.document.title}
+                              </p>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
