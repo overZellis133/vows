@@ -358,27 +358,27 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 dark:from-gray-950 dark:via-black dark:to-gray-900">
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="container mx-auto px-4 py-6 sm:py-12 max-w-6xl">
         {/* Header */}
-        <header className="mb-12 text-center">
+        <header className="mb-6 sm:mb-12 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Heart className="w-10 h-10 text-rose-500 fill-current" />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
+            <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-rose-500 fill-current" />
+            <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
               Vows
           </h1>
           </div>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Create heartfelt vows inspired by the wisdom of philosophers and thinkers throughout history
           </p>
         </header>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-8">
           {/* Left Column: Quote Selection */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-800">
-              <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                <BookOpen className="w-6 h-6 text-rose-500" />
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2">
+                <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
                 Choose Your Seed Quote
               </h2>
 
@@ -969,7 +969,7 @@ export default function Home() {
                               </div>
 
                               {/* Date Range Filter */}
-                              <div className="grid grid-cols-2 gap-2">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div>
                                   <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
                                     From date
@@ -1038,13 +1038,13 @@ export default function Home() {
                               });
                             }}
                               className={cn(
-                                "w-full text-left p-4 rounded-lg border-2 transition-all",
+                                "w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all",
                                 selectedQuote?.id === `readwise-${highlight.id}`
                                   ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
                                   : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
                               )}
                             >
-                            <div className="flex gap-3">
+                            <div className="flex gap-2 sm:gap-3">
                               {/* Book Image */}
                               {highlight.book?.cover_image_url && (
                                 <div className="flex-shrink-0">
@@ -1052,7 +1052,7 @@ export default function Home() {
                                   <img
                                     src={highlight.book.cover_image_url}
                                     alt={highlight.book.title || "Book cover"}
-                                    className="max-h-32 w-auto rounded border border-gray-200 dark:border-gray-700"
+                                    className="max-h-24 sm:max-h-32 w-auto rounded border border-gray-200 dark:border-gray-700"
                                     onError={(e) => {
                                       // Hide image if it fails to load
                                       (e.target as HTMLImageElement).style.display = 'none';
@@ -1120,9 +1120,9 @@ export default function Home() {
 
           {/* Right Column: Vow Generator */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-800">
-              <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                <FileText className="w-6 h-6 text-rose-500" />
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
                 Create Your Vows
               </h2>
 
