@@ -7,9 +7,11 @@ import { Loader2, Heart, BookOpen, FileText, Filter, ChevronDown, ChevronUp, Sea
 import type { ReadwiseHighlight } from "@/lib/readwise";
 
 type QuoteSource = "philosophers" | "readwise";
+type ContentMode = "vows" | "eulogy";
 
 export default function Home() {
   const [selectedSource, setSelectedSource] = useState<QuoteSource>("philosophers");
+  const [contentMode, setContentMode] = useState<ContentMode>("vows");
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
   const [vows, setVows] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -301,6 +303,7 @@ export default function Home() {
           relationship,
           tone,
           personalContext,
+          mode: contentMode,
         }),
       });
 
@@ -358,19 +361,70 @@ export default function Home() {
     setError(null);
   };
 
+  const isEulogyMode = contentMode === "eulogy";
+  const accentColor = isEulogyMode ? "blue" : "rose";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 dark:from-gray-950 dark:via-black dark:to-gray-900">
+    <div className={cn(
+      "min-h-screen transition-colors duration-300",
+      isEulogyMode 
+        ? "bg-gradient-to-br from-gray-950 via-black to-gray-900" 
+        : "bg-gradient-to-br from-rose-50 via-white to-pink-50 dark:from-gray-950 dark:via-black dark:to-gray-900"
+    )}>
       <div className="container mx-auto px-4 py-6 sm:py-12 max-w-6xl">
         {/* Header */}
         <header className="mb-6 sm:mb-12 text-center">
+          {/* Mode Toggle */}
+          <div className="flex justify-center mb-6">
+            <div className="inline-flex items-center gap-2 bg-gray-200 dark:bg-gray-800 rounded-full p-1">
+              <button
+                onClick={() => setContentMode("vows")}
+                className={cn(
+                  "px-4 py-2 rounded-full font-medium transition-all text-sm",
+                  !isEulogyMode
+                    ? "bg-white dark:bg-gray-700 text-rose-600 dark:text-rose-400 shadow-sm"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                )}
+              >
+                Vows
+              </button>
+              <button
+                onClick={() => setContentMode("eulogy")}
+                className={cn(
+                  "px-4 py-2 rounded-full font-medium transition-all text-sm",
+                  isEulogyMode
+                    ? "bg-gray-800 dark:bg-gray-700 text-blue-300 shadow-sm"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                )}
+              >
+                Eulogy
+              </button>
+            </div>
+          </div>
+
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-rose-500 fill-current" />
-            <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-              Vows
+            <Heart className={cn(
+              "w-8 h-8 sm:w-10 sm:h-10 fill-current transition-colors",
+              isEulogyMode ? "text-blue-400" : "text-rose-500"
+            )} />
+            <h1 className={cn(
+              "text-3xl sm:text-5xl font-bold bg-clip-text text-transparent transition-colors",
+              isEulogyMode
+                ? "bg-gradient-to-r from-blue-300 to-blue-200 leading-[1.15]"
+                : "bg-gradient-to-r from-rose-600 to-pink-600 leading-tight"
+            )}>
+              {isEulogyMode ? "Eulogy" : "Vows"}
           </h1>
           </div>
-          <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Create heartfelt vows inspired by the wisdom of philosophers and thinkers throughout history
+          <p className={cn(
+            "text-base sm:text-xl max-w-2xl mx-auto transition-colors",
+            isEulogyMode 
+              ? "text-gray-200" 
+              : "text-gray-600 dark:text-gray-400"
+          )}>
+            {isEulogyMode 
+              ? "Create a meaningful eulogy inspired by the wisdom of philosophers and thinkers throughout history"
+              : "Create heartfelt vows inspired by the wisdom of philosophers and thinkers throughout history"}
           </p>
         </header>
 
@@ -378,21 +432,39 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-8">
           {/* Left Column: Quote Selection */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
-              <h2 className="text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
+            <div className={cn(
+              "rounded-2xl shadow-lg p-4 sm:p-6 border transition-colors",
+              isEulogyMode
+                ? "bg-gray-900 border-gray-800"
+                : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800"
+            )}>
+              <h2 className={cn(
+                "text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2 transition-colors",
+                isEulogyMode ? "text-gray-100" : "text-gray-900 dark:text-gray-100"
+              )}>
+                <BookOpen className={cn(
+                  "w-5 h-5 sm:w-6 sm:h-6 transition-colors",
+                  isEulogyMode ? "text-blue-400" : "text-rose-500"
+                )} />
                 Choose Your Seed Quote
               </h2>
 
               {/* Source Tabs */}
-              <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-800">
+              <div className={cn(
+                "flex gap-2 mb-6 border-b transition-colors",
+                isEulogyMode ? "border-gray-700" : "border-gray-200 dark:border-gray-800"
+              )}>
                 <button
                   onClick={() => setSelectedSource("philosophers")}
                   className={cn(
                     "px-4 py-2 font-medium transition-colors border-b-2",
                     selectedSource === "philosophers"
-                      ? "border-rose-500 text-rose-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      ? isEulogyMode
+                        ? "border-blue-400 text-blue-300"
+                        : "border-rose-500 text-rose-600"
+                      : isEulogyMode
+                        ? "border-transparent text-gray-400 hover:text-gray-200"
+                        : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                   )}
                 >
                   Philosophers
@@ -402,8 +474,12 @@ export default function Home() {
                   className={cn(
                     "px-4 py-2 font-medium transition-colors border-b-2",
                     selectedSource === "readwise"
-                      ? "border-rose-500 text-rose-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      ? isEulogyMode
+                        ? "border-blue-400 text-blue-300"
+                        : "border-rose-500 text-rose-600"
+                      : isEulogyMode
+                        ? "border-transparent text-gray-400 hover:text-gray-200"
+                        : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                   )}
                 >
                   Readwise
@@ -412,22 +488,41 @@ export default function Home() {
 
               {/* Selected Quote Display */}
               {selectedQuote && (
-                <div className="mb-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-2xl shadow-lg p-4 border border-blue-200 dark:border-blue-900">
+                <div className={cn(
+                  "mb-4 rounded-2xl shadow-lg p-4 border transition-colors",
+                  isEulogyMode
+                    ? "bg-gradient-to-br from-blue-950/40 to-indigo-950/40 border-blue-800"
+                    : "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-900"
+                )}>
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                    <h3 className={cn(
+                      "text-sm font-semibold transition-colors",
+                      isEulogyMode ? "text-blue-200" : "text-blue-900 dark:text-blue-100"
+                    )}>
                       Your Seed Quote
                     </h3>
                     <button
                       onClick={() => setSelectedQuote(null)}
-                      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm"
+                      className={cn(
+                        "text-sm transition-colors",
+                        isEulogyMode
+                          ? "text-blue-400 hover:text-blue-300"
+                          : "text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
+                      )}
                     >
                       ✕
                     </button>
                   </div>
-                  <p className="text-gray-700 dark:text-gray-300 text-sm italic mb-1">
+                  <p className={cn(
+                    "text-sm italic mb-1 transition-colors",
+                    isEulogyMode ? "text-gray-200" : "text-gray-700 dark:text-gray-300"
+                  )}>
                     &ldquo;{highlightText(selectedQuote.text, quoteSearch)}&rdquo;
                   </p>
-                  <p className="text-xs text-blue-900 dark:text-blue-300">
+                  <p className={cn(
+                    "text-xs transition-colors",
+                    isEulogyMode ? "text-blue-300" : "text-blue-900 dark:text-blue-300"
+                  )}>
                     &mdash; {highlightText(selectedQuote.author, quoteSearch)}
                   </p>
                 </div>
@@ -438,7 +533,12 @@ export default function Home() {
                 <div className="mb-4 space-y-3">
                   <button
                     onClick={() => setFiltersCollapsed(!filtersCollapsed)}
-                    className="w-full flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                    className={cn(
+                      "w-full flex items-center gap-2 text-sm font-medium transition-colors",
+                      isEulogyMode 
+                        ? "text-gray-200 hover:text-gray-100" 
+                        : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                    )}
                   >
                     <Filter className="w-4 h-4" />
                     <span>Filters</span>
@@ -630,10 +730,16 @@ export default function Home() {
                           : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
                       )}
                     >
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      <p className={cn(
+                        "text-sm font-medium mb-1 transition-colors",
+                        isEulogyMode ? "text-gray-200" : "text-gray-700 dark:text-gray-300"
+                      )}>
                         {highlightText(quote.author, quoteSearch)}
                       </p>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm italic">
+                      <p className={cn(
+                        "text-sm italic transition-colors",
+                        isEulogyMode ? "text-gray-300" : "text-gray-600 dark:text-gray-400"
+                      )}>
                         &ldquo;{highlightText(quote.text, quoteSearch)}&rdquo;
                       </p>
                       <div className="flex items-center gap-2 mt-2">
@@ -713,7 +819,12 @@ export default function Home() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => setReadwiseFiltersCollapsed(!readwiseFiltersCollapsed)}
-                              className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                              className={cn(
+                                "flex items-center gap-2 text-sm font-medium transition-colors",
+                                isEulogyMode 
+                                  ? "text-gray-200 hover:text-gray-100" 
+                                  : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                              )}
                             >
                               <Filter className="w-4 h-4" />
                               <span>Filters</span>
@@ -1120,17 +1231,31 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Column: Vow Generator */}
+          {/* Right Column: Content Generator */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
-              <h2 className="text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
-                Create Your Vows
+            <div className={cn(
+              "rounded-2xl shadow-lg p-4 sm:p-6 border transition-colors",
+              isEulogyMode
+                ? "bg-gray-900 border-gray-800"
+                : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800"
+            )}>
+              <h2 className={cn(
+                "text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2 transition-colors",
+                isEulogyMode ? "text-gray-100" : "text-gray-900 dark:text-gray-100"
+              )}>
+                <FileText className={cn(
+                  "w-5 h-5 sm:w-6 sm:h-6 transition-colors",
+                  isEulogyMode ? "text-blue-400" : "text-rose-500"
+                )} />
+                {isEulogyMode ? "Create Your Eulogy" : "Create Your Vows"}
               </h2>
 
               {/* Person Name */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className={cn(
+                  "block text-sm font-medium mb-2 transition-colors",
+                  isEulogyMode ? "text-gray-100" : "text-gray-700 dark:text-gray-300"
+                )}>
                   Name of your loved one
                 </label>
                 <input
@@ -1138,19 +1263,28 @@ export default function Home() {
                   value={personName}
                   onChange={(e) => setPersonName(e.target.value)}
                   placeholder="Enter their name..."
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  className={cn(
+                    "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:border-transparent",
+                    isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
+                  )}
                 />
               </div>
 
               {/* Relationship Type */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className={cn(
+                  "block text-sm font-medium mb-2 transition-colors",
+                  isEulogyMode ? "text-gray-100" : "text-gray-700 dark:text-gray-300"
+                )}>
                   Relationship
                 </label>
                 <select
                   value={relationship}
                   onChange={(e) => setRelationship(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  className={cn(
+                    "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:border-transparent",
+                    isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
+                  )}
                 >
                   <option value="spouse">Spouse</option>
                   <option value="partner">Partner</option>
@@ -1161,13 +1295,19 @@ export default function Home() {
 
               {/* Tone Selection */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className={cn(
+                  "block text-sm font-medium mb-2 transition-colors",
+                  isEulogyMode ? "text-gray-100" : "text-gray-700 dark:text-gray-300"
+                )}>
                   Tone
                 </label>
                 <select
                   value={tone}
                   onChange={(e) => setTone(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  className={cn(
+                    "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:border-transparent",
+                    isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
+                  )}
                 >
                   <option value="warm">Warm & Romantic</option>
                   <option value="formal">Formal & Traditional</option>
@@ -1180,8 +1320,14 @@ export default function Home() {
 
               {/* Personal Context */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Personal Context <span className="text-gray-500 font-normal">(Optional)</span>
+                <label className={cn(
+                  "block text-sm font-medium mb-2 transition-colors",
+                  isEulogyMode ? "text-gray-100" : "text-gray-700 dark:text-gray-300"
+                )}>
+                  Personal Context <span className={cn(
+                    "font-normal transition-colors",
+                    isEulogyMode ? "text-gray-400" : "text-gray-500"
+                  )}>(Optional)</span>
                 </label>
                 <textarea
                   value={personalContext}
@@ -1190,8 +1336,13 @@ export default function Home() {
                   rows={4}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent resize-none text-sm"
                 />
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  This helps create more personalized vows
+                <p className={cn(
+                  "mt-1 text-xs transition-colors",
+                  isEulogyMode ? "text-gray-400" : "text-gray-500 dark:text-gray-400"
+                )}>
+                  {isEulogyMode 
+                    ? "This helps create a more personalized eulogy"
+                    : "This helps create more personalized vows"}
                 </p>
               </div>
 
@@ -1211,7 +1362,9 @@ export default function Home() {
                     "flex-1 px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2",
                     isGenerating || !selectedQuote || !personName.trim()
                       ? "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600"
-                      : "bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:from-rose-600 hover:to-pink-600 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      : isEulogyMode
+                        ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        : "bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:from-rose-600 hover:to-pink-600 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   )}
                 >
                   {isGenerating ? (
@@ -1220,7 +1373,7 @@ export default function Home() {
                       Generating...
                     </>
                   ) : (
-                    "Generate Vows"
+                    contentMode === "vows" ? "Generate Vows" : "Generate Eulogy"
                   )}
                 </button>
                 {(selectedQuote || vows) && (
@@ -1233,12 +1386,15 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Vows Display */}
+              {/* Content Display */}
               {vows && (
                 <div className="mt-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      Your Vows
+                    <h3 className={cn(
+                      "text-lg font-semibold transition-colors",
+                      isEulogyMode ? "text-gray-100" : "text-gray-900 dark:text-gray-100"
+                    )}>
+                      {isEulogyMode ? "Your Eulogy" : "Your Vows"}
                     </h3>
                     <button
                       onClick={async () => {
