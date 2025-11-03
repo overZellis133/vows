@@ -707,7 +707,10 @@ export default function Home() {
                       </div>
 
                       {/* Results count */}
-                      <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                      <p className={cn(
+                        "text-xs text-center transition-colors",
+                        isEulogyMode ? "text-gray-300" : "text-gray-500 dark:text-gray-400"
+                      )}>
                         {filteredQuotes.length} quote{filteredQuotes.length !== 1 ? 's' : ''} found
                       </p>
                     </>
@@ -725,24 +728,35 @@ export default function Home() {
                       className={cn(
                         "w-full text-left p-4 rounded-lg border-2 transition-all",
                         selectedQuote?.id === quote.id
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
-                          : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
+                          ? isEulogyMode
+                            ? "border-blue-400 bg-blue-900/40 shadow-md"
+                            : "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
+                          : isEulogyMode
+                            ? "border-gray-800 hover:border-gray-700 hover:shadow-sm bg-gray-900/50"
+                            : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
                       )}
                     >
                       <p className={cn(
                         "text-sm font-medium mb-1 transition-colors",
-                        isEulogyMode ? "text-gray-200" : "text-gray-700 dark:text-gray-300"
+                        isEulogyMode 
+                          ? selectedQuote?.id === quote.id ? "text-gray-100" : "text-gray-200"
+                          : "text-gray-700 dark:text-gray-300"
                       )}>
                         {highlightText(quote.author, quoteSearch)}
                       </p>
                       <p className={cn(
                         "text-sm italic transition-colors",
-                        isEulogyMode ? "text-gray-300" : "text-gray-600 dark:text-gray-400"
+                        isEulogyMode 
+                          ? selectedQuote?.id === quote.id ? "text-gray-200" : "text-gray-300"
+                          : "text-gray-600 dark:text-gray-400"
                       )}>
                         &ldquo;{highlightText(quote.text, quoteSearch)}&rdquo;
                       </p>
                       <div className="flex items-center gap-2 mt-2">
-                        <p className="text-xs text-gray-500 dark:text-gray-500">
+                        <p className={cn(
+                          "text-xs transition-colors",
+                          isEulogyMode ? "text-gray-300" : "text-gray-500 dark:text-gray-500"
+                        )}>
                           {quote.period}
                         </p>
                         {quote.category && (
@@ -758,7 +772,10 @@ export default function Home() {
                     {readwiseHighlights.length === 0 && (
                       <>
                         <div className="text-center py-4">
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                          <p className={cn(
+                            "text-sm mb-4 transition-colors",
+                            isEulogyMode ? "text-gray-200" : "text-gray-600 dark:text-gray-400"
+                          )}>
                             Connect your Readwise account to use your saved highlights
                           </p>
                           <a
@@ -771,7 +788,10 @@ export default function Home() {
                           </a>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          <label className={cn(
+                            "block text-sm font-medium mb-2 transition-colors",
+                            isEulogyMode ? "text-gray-200" : "text-gray-700 dark:text-gray-300"
+                          )}>
                             Readwise Access Token
                           </label>
                           <input
@@ -781,7 +801,10 @@ export default function Home() {
                             placeholder="Paste your access token here..."
                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent text-sm"
                           />
-                          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                          <p className={cn(
+                            "mt-1 text-xs transition-colors",
+                            isEulogyMode ? "text-gray-300" : "text-gray-500 dark:text-gray-400"
+                          )}>
                             Your token stays in your browser and is never sent to our servers
                           </p>
                         </div>
@@ -831,7 +854,12 @@ export default function Home() {
                             </button>
                             <button
                               onClick={() => setReadwiseFiltersCollapsed(!readwiseFiltersCollapsed)}
-                              className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                              className={cn(
+                                "text-xs transition-colors",
+                                isEulogyMode 
+                                  ? "text-gray-300 hover:text-gray-200"
+                                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                              )}
                             >
                               {filteredReadwiseHighlights.length} highlight{filteredReadwiseHighlights.length !== 1 ? 's' : ''} found
                             </button>
@@ -1152,8 +1180,12 @@ export default function Home() {
                               className={cn(
                                 "w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all",
                                 selectedQuote?.id === `readwise-${highlight.id}`
-                                  ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
-                                  : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
+                                  ? isEulogyMode
+                                    ? "border-blue-400 bg-blue-900/40 shadow-md"
+                                    : "border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md"
+                                  : isEulogyMode
+                                    ? "border-gray-800 hover:border-gray-700 hover:shadow-sm bg-gray-900/50"
+                                    : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-sm"
                               )}
                             >
                             <div className="flex gap-2 sm:gap-3">
@@ -1176,19 +1208,32 @@ export default function Home() {
                               {/* Content */}
                               <div className="flex-1 min-w-0">
                                 {/* Author and Title */}
-                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <p className={cn(
+                                  "text-sm font-medium mb-1 transition-colors",
+                                  isEulogyMode 
+                                    ? selectedQuote?.id === `readwise-${highlight.id}` ? "text-gray-100" : "text-gray-200"
+                                    : "text-gray-700 dark:text-gray-300"
+                                )}>
                                   {highlight.book?.author ? highlightText(highlight.book.author, readwiseQuoteSearch) : 
                                    highlight.book?.title ? highlightText(highlight.book.title, readwiseQuoteSearch) : 
                                    "Unknown"}
                                 </p>
                                 
                                 {/* Quote Text */}
-                                <p className="text-gray-600 dark:text-gray-400 text-sm italic mb-2">
+                                <p className={cn(
+                                  "text-sm italic mb-2 transition-colors",
+                                  isEulogyMode 
+                                    ? selectedQuote?.id === `readwise-${highlight.id}` ? "text-gray-200" : "text-gray-300"
+                                    : "text-gray-600 dark:text-gray-400"
+                                )}>
                                   &ldquo;{highlightText(highlight.text, readwiseQuoteSearch)}&rdquo;
                                 </p>
                                 
                                 {/* Metadata Row */}
-                                <div className="flex items-center gap-2 flex-wrap text-xs text-gray-500 dark:text-gray-500">
+                                <div className={cn(
+                                  "flex items-center gap-2 flex-wrap text-xs transition-colors",
+                                  isEulogyMode ? "text-gray-300" : "text-gray-500 dark:text-gray-500"
+                                )}>
                                   {highlight.book?.title && highlight.book?.author && (
                                     <span className="inline-flex items-center gap-1">
                                       <BookOpen className="w-3 h-3" />
@@ -1378,7 +1423,12 @@ export default function Home() {
                 {(selectedQuote || vows) && (
                   <button
                     onClick={clearAll}
-                    className="px-6 py-3 rounded-lg font-medium border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    className={cn(
+                      "px-6 py-3 rounded-lg font-medium border transition-colors",
+                      isEulogyMode
+                        ? "border-gray-600 text-gray-200 hover:bg-gray-800 hover:border-gray-500"
+                        : "border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                    )}
                   >
                     Clear
                   </button>
