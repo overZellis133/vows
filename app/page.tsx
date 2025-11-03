@@ -16,6 +16,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [personName, setPersonName] = useState("");
   const [relationship, setRelationship] = useState("spouse");
+  const [tone, setTone] = useState("warm");
   const [personalContext, setPersonalContext] = useState("");
   const [filterAuthors, setFilterAuthors] = useState<string[]>([]);
   const [filterCategories, setFilterCategories] = useState<string[]>([]);
@@ -298,6 +299,7 @@ export default function Home() {
           quote: selectedQuote,
           personName,
           relationship,
+          tone,
           personalContext,
         }),
       });
@@ -1140,6 +1142,25 @@ export default function Home() {
                   <option value="partner">Partner</option>
                   <option value="friend">Friend</option>
                   <option value="family">Family Member</option>
+                </select>
+              </div>
+
+              {/* Tone Selection */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Tone
+                </label>
+                <select
+                  value={tone}
+                  onChange={(e) => setTone(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                >
+                  <option value="warm">Warm & Romantic</option>
+                  <option value="formal">Formal & Traditional</option>
+                  <option value="playful">Playful & Lighthearted</option>
+                  <option value="poetic">Poetic & Lyrical</option>
+                  <option value="sincere">Sincere & Heartfelt</option>
+                  <option value="humorous">Humorous & Witty</option>
                 </select>
               </div>
 
