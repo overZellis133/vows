@@ -362,7 +362,6 @@ export default function Home() {
   };
 
   const isEulogyMode = contentMode === "eulogy";
-  const accentColor = isEulogyMode ? "blue" : "rose";
 
   return (
     <div className={cn(
