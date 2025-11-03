@@ -1128,6 +1128,20 @@ export default function Home() {
                 Create Your Vows
               </h2>
 
+              {/* Person Name */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Name of your loved one
+                </label>
+                <input
+                  type="text"
+                  value={personName}
+                  onChange={(e) => setPersonName(e.target.value)}
+                  placeholder="Enter their name..."
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                />
+              </div>
+
               {/* Relationship Type */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -1162,20 +1176,6 @@ export default function Home() {
                   <option value="sincere">Sincere & Heartfelt</option>
                   <option value="humorous">Humorous & Witty</option>
                 </select>
-              </div>
-
-              {/* Person Name */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Name of your loved one
-                </label>
-                <input
-                  type="text"
-                  value={personName}
-                  onChange={(e) => setPersonName(e.target.value)}
-                  placeholder="Enter their name..."
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                />
               </div>
 
               {/* Personal Context */}
