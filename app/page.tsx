@@ -1111,7 +1111,10 @@ export default function Home() {
                               {/* Date Range Filter */}
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div>
-                                  <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                  <label className={cn(
+                                    "block text-xs mb-1 transition-colors",
+                                    isEulogyMode ? "text-gray-300" : "text-gray-600 dark:text-gray-400"
+                                  )}>
                                     From date
                                   </label>
                                   <div className="relative">
@@ -1135,7 +1138,10 @@ export default function Home() {
                                   </div>
                                 </div>
                                 <div>
-                                  <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                  <label className={cn(
+                                    "block text-xs mb-1 transition-colors",
+                                    isEulogyMode ? "text-gray-300" : "text-gray-600 dark:text-gray-400"
+                                  )}>
                                     To date
                                   </label>
                                   <div className="relative">
