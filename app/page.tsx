@@ -29,6 +29,9 @@ export default function Home() {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showMobileNextStepHint, setShowMobileNextStepHint] = useState(false);
+  const [highlightGeneratorCard, setHighlightGeneratorCard] = useState(false);
+  const [isGeneratorInView, setIsGeneratorInView] = useState(false);
   const [readwiseApiKey, setReadwiseApiKey] = useState("");
   const [readwiseHighlights, setReadwiseHighlights] = useState<ReadwiseHighlight[]>([]);
   const [isLoadingReadwise, setIsLoadingReadwise] = useState(false);
@@ -49,6 +52,8 @@ export default function Home() {
   
   const authorDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const generatorSectionRef = useRef<HTMLDivElement | null>(null);
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const readwiseAuthorDropdownRef = useRef<HTMLDivElement>(null);
   const readwiseCategoryDropdownRef = useRef<HTMLDivElement>(null);
   const readwiseTitleDropdownRef = useRef<HTMLDivElement>(null);
@@ -124,6 +129,37 @@ export default function Home() {
       readwiseTitleSearchRef.current.focus();
     }
   }, [showReadwiseTitles]);
+
+  useEffect(() => {
+    const element = generatorSectionRef.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0]) {
+        const isInView = entries[0].isIntersecting;
+        setIsGeneratorInView(isInView);
+        if (isInView) {
+          setShowMobileNextStepHint(false);
+        }
+      }
+    }, { threshold: 0.2 });
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    };
+  }, []);
 
   // Filter authors and categories based on search
   const filteredAuthors = useMemo(() => {
@@ -275,6 +311,35 @@ export default function Home() {
 
   const handleQuoteSelect = (quote: Quote) => {
     setSelectedQuote(quote);
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const isMobileViewport = window.innerWidth <= 768;
+    const generatorEl = generatorSectionRef.current;
+
+    if (!generatorEl || !isMobileViewport) {
+      return;
+    }
+
+    if (highlightTimerRef.current) {
+      clearTimeout(highlightTimerRef.current);
+    }
+
+    setHighlightGeneratorCard(true);
+    highlightTimerRef.current = setTimeout(() => {
+      setHighlightGeneratorCard(false);
+      highlightTimerRef.current = null;
+    }, 1600);
+
+    if (!isGeneratorInView) {
+      setShowMobileNextStepHint(true);
+    }
+
+    window.setTimeout(() => {
+      generatorEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
   };
 
   const generateVows = async () => {
@@ -359,6 +424,12 @@ export default function Home() {
     setPersonName("");
     setPersonalContext("");
     setError(null);
+    setShowMobileNextStepHint(false);
+    setHighlightGeneratorCard(false);
+    if (highlightTimerRef.current) {
+      clearTimeout(highlightTimerRef.current);
+      highlightTimerRef.current = null;
+    }
   };
 
   const isEulogyMode = contentMode === "eulogy";
@@ -501,7 +572,15 @@ export default function Home() {
                       Your Seed Quote
                     </h3>
                     <button
-                      onClick={() => setSelectedQuote(null)}
+                      onClick={() => {
+                        setSelectedQuote(null);
+                        setShowMobileNextStepHint(false);
+                        setHighlightGeneratorCard(false);
+                        if (highlightTimerRef.current) {
+                          clearTimeout(highlightTimerRef.current);
+                          highlightTimerRef.current = null;
+                        }
+                      }}
                       className={cn(
                         "text-sm transition-colors",
                         isEulogyMode
@@ -1174,15 +1253,15 @@ export default function Home() {
                           {filteredReadwiseHighlights.map((highlight) => (
                             <button
                               key={highlight.id}
-                            onClick={() => {
-                              setSelectedQuote({
-                                id: `readwise-${highlight.id}`,
-                                text: highlight.text,
-                                author: highlight.book?.author || highlight.book?.title || "Unknown",
-                                period: highlight.book?.category || "Readwise",
-                                category: undefined,
-                              });
-                            }}
+                              onClick={() => {
+                                handleQuoteSelect({
+                                  id: `readwise-${highlight.id}`,
+                                  text: highlight.text,
+                                  author: highlight.book?.author || highlight.book?.title || "Unknown",
+                                  period: highlight.book?.category || "Readwise",
+                                  category: undefined,
+                                });
+                              }}
                               className={cn(
                                 "w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all",
                                 selectedQuote?.id === `readwise-${highlight.id}`
@@ -1283,12 +1362,16 @@ export default function Home() {
 
           {/* Right Column: Content Generator */}
           <div className="space-y-6">
-            <div className={cn(
-              "rounded-2xl shadow-lg p-4 sm:p-6 border transition-colors",
-              isEulogyMode
-                ? "bg-gray-900 border-gray-800"
-                : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800"
-            )}>
+            <div
+              ref={generatorSectionRef}
+              className={cn(
+                "rounded-2xl shadow-lg p-4 sm:p-6 border transition-colors",
+                isEulogyMode
+                  ? "bg-gray-900 border-gray-800"
+                  : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800",
+                highlightGeneratorCard && (isEulogyMode ? "ring-2 ring-blue-400" : "ring-2 ring-rose-400")
+              )}
+            >
               <h2 className={cn(
                 "text-xl sm:text-2xl font-semibold mb-4 flex items-center gap-2 transition-colors",
                 isEulogyMode ? "text-gray-100" : "text-gray-900 dark:text-gray-100"
@@ -1489,6 +1572,42 @@ export default function Home() {
           <p>Created with ❤️ for crafting meaningful vows and personal letters</p>
         </footer>
       </div>
+
+      {showMobileNextStepHint && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm sm:hidden">
+          <button
+            type="button"
+            className={cn(
+              "w-full flex items-center justify-between gap-3 px-4 py-3 rounded-full shadow-lg text-sm font-medium transition-all",
+              isEulogyMode
+                ? "bg-blue-600 text-white hover:bg-blue-500"
+                : "bg-rose-500 text-white hover:bg-rose-400"
+            )}
+            onClick={() => {
+              setShowMobileNextStepHint(false);
+
+              if (!generatorSectionRef.current) {
+                return;
+              }
+
+              if (highlightTimerRef.current) {
+                clearTimeout(highlightTimerRef.current);
+              }
+
+              setHighlightGeneratorCard(true);
+              highlightTimerRef.current = setTimeout(() => {
+                setHighlightGeneratorCard(false);
+                highlightTimerRef.current = null;
+              }, 1600);
+
+              generatorSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          >
+            <span>Step 2: Personalize below</span>
+            <ChevronDown className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
