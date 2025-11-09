@@ -17,7 +17,7 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [personName, setPersonName] = useState("");
-  const [relationship, setRelationship] = useState("spouse");
+  const [relationship, setRelationship] = useState("partner");
   const [tone, setTone] = useState("warm");
   const [personalContext, setPersonalContext] = useState("");
   const [filterAuthors, setFilterAuthors] = useState<string[]>([]);
@@ -1414,8 +1414,8 @@ export default function Home() {
                     isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
                   )}
                 >
-                  <option value="spouse">Spouse</option>
                   <option value="partner">Partner</option>
+                  <option value="spouse">Spouse</option>
                   <option value="friend">Friend</option>
                   <option value="family">Family Member</option>
                 </select>
