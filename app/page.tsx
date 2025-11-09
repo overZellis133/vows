@@ -1300,26 +1300,6 @@ export default function Home() {
                 {isEulogyMode ? "Create Your Eulogy" : "Create Your Vows"}
               </h2>
 
-              {/* Person Name */}
-              <div className="mb-4">
-                <label className={cn(
-                  "block text-sm font-medium mb-2 transition-colors",
-                  isEulogyMode ? "text-gray-100" : "text-gray-700 dark:text-gray-300"
-                )}>
-                  Name of your loved one
-                </label>
-                <input
-                  type="text"
-                  value={personName}
-                  onChange={(e) => setPersonName(e.target.value)}
-                  placeholder="Enter their name..."
-                  className={cn(
-                    "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:border-transparent",
-                    isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
-                  )}
-                />
-              </div>
-
               {/* Relationship Type */}
               <div className="mb-4">
                 <label className={cn(
@@ -1341,6 +1321,26 @@ export default function Home() {
                   <option value="friend">Friend</option>
                   <option value="family">Family Member</option>
                 </select>
+              </div>
+
+              {/* Person Name */}
+              <div className="mb-4">
+                <label className={cn(
+                  "block text-sm font-medium mb-2 transition-colors",
+                  isEulogyMode ? "text-gray-100" : "text-gray-700 dark:text-gray-300"
+                )}>
+                  Name of your loved one
+                </label>
+                <input
+                  type="text"
+                  value={personName}
+                  onChange={(e) => setPersonName(e.target.value)}
+                  placeholder="Enter their name..."
+                  className={cn(
+                    "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:border-transparent",
+                    isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
+                  )}
+                />
               </div>
 
               {/* Tone Selection */}
