@@ -1382,9 +1382,15 @@ export default function Home() {
                 <textarea
                   value={personalContext}
                   onChange={(e) => setPersonalContext(e.target.value)}
-                  placeholder="Share details about what makes this person special, moments you've shared, qualities you admire, or what you hope for your future together..."
+                  placeholder={isEulogyMode
+                    ? "Share memories, qualities, and stories that celebrate their life, the impact they had, and moments you cherish..."
+                    : "Share details about what makes this person special, moments you've shared, qualities you admire, or what you hope for your future together..."
+                  }
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-rose-500 focus:border-transparent resize-none text-sm"
+                  className={cn(
+                    "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:border-transparent resize-none text-sm",
+                    isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
+                  )}
                 />
                 <p className={cn(
                   "mt-1 text-xs transition-colors",
