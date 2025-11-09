@@ -52,6 +52,7 @@ export default function Home() {
   
   const authorDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const quoteSectionRef = useRef<HTMLDivElement | null>(null);
   const generatorSectionRef = useRef<HTMLDivElement | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const readwiseAuthorDropdownRef = useRef<HTMLDivElement>(null);
@@ -501,7 +502,7 @@ export default function Home() {
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-8">
           {/* Left Column: Quote Selection */}
-          <div className="space-y-6">
+          <div className="space-y-6" ref={quoteSectionRef}>
             <div className={cn(
               "rounded-2xl shadow-lg p-4 sm:p-6 border transition-colors",
               isEulogyMode
@@ -1382,6 +1383,52 @@ export default function Home() {
                 )} />
                 {isEulogyMode ? "Create Your Eulogy" : "Create Your Vows"}
               </h2>
+
+              {selectedQuote && (
+                <div
+                  className={cn(
+                    "sm:hidden mb-4 p-4 rounded-xl border transition-colors",
+                    isEulogyMode
+                      ? "bg-blue-950/40 border-blue-800 text-gray-100"
+                      : "bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950/30 dark:border-blue-700 dark:text-blue-100"
+                  )}
+                >
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide opacity-80">
+                        Your seed quote
+                      </p>
+                      <p className="text-sm italic leading-relaxed">
+                        &ldquo;{selectedQuote.text}&rdquo;
+                      </p>
+                      <p className="text-xs opacity-80">— {selectedQuote.author}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMobileNextStepHint(false);
+                        setHighlightGeneratorCard(false);
+                        if (highlightTimerRef.current) {
+                          clearTimeout(highlightTimerRef.current);
+                          highlightTimerRef.current = null;
+                        }
+                        if (quoteSectionRef.current) {
+                          quoteSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }
+                      }}
+                      className={cn(
+                        "w-full flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-colors",
+                        isEulogyMode
+                          ? "bg-blue-800 hover:bg-blue-700 text-gray-100"
+                          : "bg-blue-600 hover:bg-blue-500 text-white"
+                      )}
+                    >
+                      <ChevronUp className="w-3 h-3" />
+                      Change quote
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Relationship Type */}
               <div className="mb-4">
