@@ -29,9 +29,7 @@ export default function Home() {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [showMobileNextStepHint, setShowMobileNextStepHint] = useState(false);
   const [highlightGeneratorCard, setHighlightGeneratorCard] = useState(false);
-  const [isGeneratorInView, setIsGeneratorInView] = useState(false);
   const [readwiseApiKey, setReadwiseApiKey] = useState("");
   const [readwiseHighlights, setReadwiseHighlights] = useState<ReadwiseHighlight[]>([]);
   const [isLoadingReadwise, setIsLoadingReadwise] = useState(false);
@@ -130,29 +128,6 @@ export default function Home() {
       readwiseTitleSearchRef.current.focus();
     }
   }, [showReadwiseTitles]);
-
-  useEffect(() => {
-    const element = generatorSectionRef.current;
-    if (!element || typeof IntersectionObserver === "undefined") {
-      return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0]) {
-        const isInView = entries[0].isIntersecting;
-        setIsGeneratorInView(isInView);
-        if (isInView) {
-          setShowMobileNextStepHint(false);
-        }
-      }
-    }, { threshold: 0.2 });
-
-    observer.observe(element);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -334,10 +309,6 @@ export default function Home() {
       highlightTimerRef.current = null;
     }, 1600);
 
-    if (!isGeneratorInView) {
-      setShowMobileNextStepHint(true);
-    }
-
     window.setTimeout(() => {
       generatorEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 120);
@@ -425,7 +396,6 @@ export default function Home() {
     setPersonName("");
     setPersonalContext("");
     setError(null);
-    setShowMobileNextStepHint(false);
     setHighlightGeneratorCard(false);
     if (highlightTimerRef.current) {
       clearTimeout(highlightTimerRef.current);
@@ -575,7 +545,6 @@ export default function Home() {
                     <button
                       onClick={() => {
                         setSelectedQuote(null);
-                        setShowMobileNextStepHint(false);
                         setHighlightGeneratorCard(false);
                         if (highlightTimerRef.current) {
                           clearTimeout(highlightTimerRef.current);
@@ -1406,7 +1375,6 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => {
-                        setShowMobileNextStepHint(false);
                         setHighlightGeneratorCard(false);
                         if (highlightTimerRef.current) {
                           clearTimeout(highlightTimerRef.current);
@@ -1619,42 +1587,6 @@ export default function Home() {
           <p>Created with ❤️ for crafting meaningful vows and personal letters</p>
         </footer>
       </div>
-
-      {showMobileNextStepHint && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm sm:hidden">
-          <button
-            type="button"
-            className={cn(
-              "w-full flex items-center justify-between gap-3 px-4 py-3 rounded-full shadow-lg text-sm font-medium transition-all",
-              isEulogyMode
-                ? "bg-blue-600 text-white hover:bg-blue-500"
-                : "bg-rose-500 text-white hover:bg-rose-400"
-            )}
-            onClick={() => {
-              setShowMobileNextStepHint(false);
-
-              if (!generatorSectionRef.current) {
-                return;
-              }
-
-              if (highlightTimerRef.current) {
-                clearTimeout(highlightTimerRef.current);
-              }
-
-              setHighlightGeneratorCard(true);
-              highlightTimerRef.current = setTimeout(() => {
-                setHighlightGeneratorCard(false);
-                highlightTimerRef.current = null;
-              }, 1600);
-
-              generatorSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-          >
-            <span>Step 2: Personalize below</span>
-            <ChevronDown className="w-4 h-4" />
-          </button>
-        </div>
-      )}
     </div>
   );
 }
