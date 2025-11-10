@@ -31,7 +31,7 @@ const EULOGY_TONE_OPTIONS: ToneOption[] = [
   { value: "playful", label: "Playful & Lighthearted" },
   { value: "humorous", label: "Humorous & Witty" },
   { value: "vengeful", label: "Vengeful & Just" },
-  { value: "balanced", label: "Balance & True" },
+  { value: "balanced", label: "Balanced & True" },
 ];
 
 export default function Home() {
