@@ -9,6 +9,28 @@ import type { ReadwiseHighlight } from "@/lib/readwise";
 type QuoteSource = "philosophers" | "readwise";
 type ContentMode = "vows" | "eulogy";
 
+type ToneOption = {
+  value: string;
+  label: string;
+};
+
+const VOW_TONE_OPTIONS: ToneOption[] = [
+  { value: "warm", label: "Warm & Romantic" },
+  { value: "formal", label: "Formal & Traditional" },
+  { value: "playful", label: "Playful & Lighthearted" },
+  { value: "poetic", label: "Poetic & Lyrical" },
+  { value: "sincere", label: "Sincere & Heartfelt" },
+  { value: "humorous", label: "Humorous & Witty" },
+];
+
+const EULOGY_TONE_OPTIONS: ToneOption[] = [
+  { value: "sincere", label: "Sincere & Heartfelt" },
+  { value: "formal", label: "Formal & Traditional" },
+  { value: "poetic", label: "Poetic & Lyrical" },
+  { value: "playful", label: "Playful & Lighthearted" },
+  { value: "humorous", label: "Humorous & Witty" },
+];
+
 export default function Home() {
   const [selectedSource, setSelectedSource] = useState<QuoteSource>("philosophers");
   const [contentMode, setContentMode] = useState<ContentMode>("vows");
@@ -48,6 +70,9 @@ export default function Home() {
   const [readwiseDateStart, setReadwiseDateStart] = useState("");
   const [readwiseDateEnd, setReadwiseDateEnd] = useState("");
   
+  const isEulogyMode = contentMode === "eulogy";
+  const toneOptions = isEulogyMode ? EULOGY_TONE_OPTIONS : VOW_TONE_OPTIONS;
+
   const authorDropdownRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
   const quoteSectionRef = useRef<HTMLDivElement | null>(null);
@@ -136,6 +161,13 @@ export default function Home() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const availableOptions = isEulogyMode ? EULOGY_TONE_OPTIONS : VOW_TONE_OPTIONS;
+    if (!availableOptions.some(option => option.value === tone)) {
+      setTone(availableOptions[0]?.value ?? "");
+    }
+  }, [isEulogyMode, tone]);
 
   // Filter authors and categories based on search
   const filteredAuthors = useMemo(() => {
@@ -402,8 +434,6 @@ export default function Home() {
       highlightTimerRef.current = null;
     }
   };
-
-  const isEulogyMode = contentMode === "eulogy";
 
   return (
     <div className={cn(
@@ -1308,8 +1338,8 @@ export default function Home() {
                                   {highlight.url && (
                                     <a
                                       href={highlight.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
                                       className="inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 hover:underline"
                                       onClick={(e) => e.stopPropagation()}
                                     >
@@ -1450,19 +1480,18 @@ export default function Home() {
                   Tone
                 </label>
                 <select
-                  value={tone}
+                  value={toneOptions.some(option => option.value === tone) ? tone : toneOptions[0]?.value ?? ""}
                   onChange={(e) => setTone(e.target.value)}
                   className={cn(
                     "w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:border-transparent",
                     isEulogyMode ? "focus:ring-blue-500" : "focus:ring-rose-500"
                   )}
                 >
-                  <option value="warm">Warm & Romantic</option>
-                  <option value="formal">Formal & Traditional</option>
-                  <option value="playful">Playful & Lighthearted</option>
-                  <option value="poetic">Poetic & Lyrical</option>
-                  <option value="sincere">Sincere & Heartfelt</option>
-                  <option value="humorous">Humorous & Witty</option>
+                  {toneOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -1584,7 +1613,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="text-center text-gray-500 dark:text-gray-400 text-sm mt-12">
-          <p>Created with ❤️ for crafting meaningful vows and personal letters</p>
+          <p>Created with ❤️ to help you craft meaningful vows and heartfelt eulogies</p>
         </footer>
       </div>
     </div>
