@@ -46,7 +46,10 @@ export async function POST(request: NextRequest) {
       playful: "playful, lighthearted, and fun. Include humor and whimsy while still expressing genuine commitment and love.",
       poetic: "poetic, lyrical, and beautifully crafted. Use rich imagery, metaphors, and rhythmic language to create something truly memorable.",
       sincere: "sincere, heartfelt, and authentic. Be direct and genuine without being flowery, focusing on honest expressions of love and commitment.",
-      humorous: "humorous, witty, and entertaining. Include jokes, playful references, and light-hearted moments while still conveying real commitment."
+      humorous: "humorous, witty, and entertaining. Include jokes, playful references, and light-hearted moments while still conveying real commitment.",
+      filthy: "filthy, flirty, and provocatively sensual. Use suggestive language and playful innuendo while maintaining a sense of romance and intimacy. Be bold and playful with physical and sensual expressions of desire and attraction.",
+      vengeful: "vengeful, just, and unflinching. Acknowledge harm, injustice, or wrongdoing with directness and honesty. Speak truth to power while maintaining dignity. This tone allows for expressing difficult truths about the person's impact, whether positive or negative, with a sense of moral clarity and justice.",
+      balanced: "balanced, true, and honest. Present a nuanced, realistic portrait that acknowledges both strengths and flaws. Avoid idealization while still honoring the person's memory. Tell the whole truth with compassion and fairness, recognizing that people are complex and multifaceted."
     };
 
     const selectedTone = tone || (isEulogy ? "sincere" : "warm");

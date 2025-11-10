@@ -21,6 +21,7 @@ const VOW_TONE_OPTIONS: ToneOption[] = [
   { value: "poetic", label: "Poetic & Lyrical" },
   { value: "sincere", label: "Sincere & Heartfelt" },
   { value: "humorous", label: "Humorous & Witty" },
+  { value: "filthy", label: "Filthy & Flirty" },
 ];
 
 const EULOGY_TONE_OPTIONS: ToneOption[] = [
@@ -29,6 +30,8 @@ const EULOGY_TONE_OPTIONS: ToneOption[] = [
   { value: "poetic", label: "Poetic & Lyrical" },
   { value: "playful", label: "Playful & Lighthearted" },
   { value: "humorous", label: "Humorous & Witty" },
+  { value: "vengeful", label: "Vengeful & Just" },
+  { value: "balanced", label: "Balance & True" },
 ];
 
 export default function Home() {
